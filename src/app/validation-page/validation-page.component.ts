@@ -1,50 +1,62 @@
 import { Component, OnInit } from '@angular/core';
-import { ValidControl } from 'src/validation/valid-control';
-import { ValidGroup } from 'src/validation/valid-group';
-import { ValidState } from 'src/validation/valid-state';
-import { BaseValidationComponent } from 'src/validation/validation-component';
+import { ValidControl, ValidGroup } from 'src/validation';
+import { BasePageValidationComponent } from 'src/validation/validation-component';
 import { TestModel } from '../test.model';
 
 @Component({
   selector: 'app-validation-page',
   templateUrl: './validation-page.component.html',
 })
-export class ValidationPageComponent extends BaseValidationComponent<TestModel> implements OnInit {
-  private disableText: boolean = false;
+export class ValidationPageComponent extends BasePageValidationComponent implements OnInit {
+  private disableInnerControl: boolean = false;
+
+  public timestamp: Date = new Date();
+
+  public innerControl!: ValidControl<TestModel>;
 
   constructor() {
     super();
   }
 
-  public textControl!: ValidControl<string>;
+  public async ngOnInit(): Promise<void> {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
-  public ngOnInit(): void {
-    this.initValidation();
-  }
-
-  protected writeValue(value: TestModel | null | undefined): void {
-    console.log(value);
-  }
-
-  protected buildValidation(): ValidState<TestModel> {
-    this.textControl = new ValidControl({
-      value: '',
-      groups: ['DisableText'],
-    });
-
-    return new ValidGroup<TestModel>(
-      {
-        textControl: this.textControl,
-      },
-      {
-        DisableText: () => !this.disableText,
-      }
+    this.innerControl.setValue(
+      new TestModel({
+        text: 'test',
+      })
     );
   }
 
-  protected getValue(): TestModel | null | undefined {
-    return new TestModel({
-      text: this.textControl.value,
+  public getChildValue(): string {
+    return JSON.stringify(this.innerControl.value);
+  }
+
+  public onDisableInnerControl(): void {
+    this.disableInnerControl = !this.disableInnerControl;
+    this.validGroup.checkGroups();
+  }
+
+  protected buildValidation(): ValidGroup {
+    this.innerControl = new ValidControl({
+      groups: ['DisableInnerControl'],
     });
+
+    const group = new ValidGroup(
+      {
+        innerControl: this.innerControl,
+      },
+      {
+        DisableInnerControl: () => this.disableInnerControl,
+      }
+    );
+
+    group.childValueChanges.subscribe({
+      next: () => {
+        this.timestamp = new Date();
+      },
+    });
+
+    return group;
   }
 }

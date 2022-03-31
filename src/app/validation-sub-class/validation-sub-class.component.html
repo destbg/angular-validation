@@ -1,0 +1,10 @@
+<div style="padding: 1em; border: 5px solid black">
+  <div>
+    I am currently: <b>{{ isDisabled ? "disabled" : "enabled" }}</b>
+  </div>
+  <div>
+    Value inside the control: <b>{{ textControl.value }}</b>
+  </div>
+  <app-input-control [validControl]="textControl"></app-input-control>
+  <button (click)="onDisableText()" [disabled]="isDisabled">Disable input</button>
+</div>

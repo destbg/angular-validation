@@ -1,13 +1,13 @@
-import { IValidState } from '../interfaces/valid-state.interface';
-import { ValidatorModel } from '../models/validator.model';
+import { IValidControl } from '../interfaces/valid-control.interface';
+import { ControlValidatorModel } from '../models/validator.model';
 
 const EMAIL_REGEXP =
   /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
-export function email(groups?: string[], severity?: string): ValidatorModel {
+export function emailValidator(groups?: string[], severity?: string): ControlValidatorModel {
   return {
-    fn: (validState: IValidState) => {
-      const value = validState.anyValue;
+    fn: (validControl: IValidControl) => {
+      const value = validControl.anyValue;
 
       // When the value is undefined or null, it should only be validated by the required validator.
       if (value === undefined || value === null) {

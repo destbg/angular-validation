@@ -1,45 +1,51 @@
-import { IValidState } from '../interfaces/valid-state.interface';
-import { ValidatorModel } from '../models/validator.model';
+import { IValidControl } from '../interfaces/valid-control.interface';
+import { ControlValidatorModel } from '../models/validator.model';
 import { format } from '../utils/format.util';
 
-export function notEqual(expectedValue: any, groups?: string[], severity?: string): ValidatorModel {
+export function notEqualValidator(expectedValues: any[], groups?: string[], severity?: string): ControlValidatorModel {
   return {
-    fn: (validState: IValidState) => {
-      const value = validState.anyValue;
+    fn: (validControl: IValidControl) => {
+      const value = validControl.anyValue;
 
       // When the value is undefined or null, it should only be validated by the required validator.
       if (value === undefined || value === null) {
         return true;
       }
 
-      if (expectedValue instanceof Date && value instanceof Date) {
-        if (value.getTime() === expectedValue.getTime()) {
-          return false;
+      for (const expectedValue of expectedValues) {
+        if (expectedValue instanceof Date && value instanceof Date) {
+          if (value.getTime() === expectedValue.getTime()) {
+            return false;
+          }
+        } else {
+          switch (typeof expectedValue) {
+            case 'number':
+              if (Number(value) === expectedValue) {
+                return false;
+              }
+              break;
+            case 'string':
+              if (String(value) === expectedValue) {
+                return false;
+              }
+              break;
+            case 'boolean':
+              if (Boolean(value) === expectedValue) {
+                return false;
+              }
+              break;
+          }
         }
-      } else {
-        switch (typeof expectedValue) {
-          case 'number':
-            if (Number(value) === expectedValue) {
-              return false;
-            }
-            break;
-          case 'string':
-            if (String(value) === expectedValue) {
-              return false;
-            }
-            break;
-          case 'boolean':
-            if (Boolean(value) === expectedValue) {
-              return false;
-            }
-            break;
+
+        if (value === expectedValue) {
+          return false;
         }
       }
 
-      return value !== expectedValue;
+      return true;
     },
     format: (error: string) => {
-      return format(error, [expectedValue]);
+      return format(error, [expectedValues]);
     },
     identifier: 'notEqual',
     groups: groups ?? [],

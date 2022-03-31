@@ -1,82 +1,157 @@
-import { Component, Input } from '@angular/core';
-import { ValidArray } from './valid-array';
+import { Subject } from 'rxjs';
+import { ValidationState } from './helpers/validation-state';
+import { IControlValueAccessor } from './interfaces/control-value-accessor.interface';
+import { IValidControl } from './interfaces/valid-control.interface';
+import { ControlValidatorModel, ValidatorModel } from './models/validator.model';
+import { TLControl } from './tl-control';
 import { ValidControl } from './valid-control';
 import { ValidGroup } from './valid-group';
-import { ValidState } from './valid-state';
 
-// TODO: Make it so the valid state injects thru the constructor
+export abstract class BasePageValidationComponent {
+  public validGroup!: ValidGroup;
+  public validators!: ValidatorModel[];
 
-@Component({
-  template: '',
-})
-export abstract class BaseValidationComponent<T> {
-  private validation!: ValidState<T>;
-  private changingValue: boolean = false;
+  public isDisabled: boolean = false;
 
-  @Input()
-  public validState?: ValidState<T>;
+  constructor() {
+    this.validGroup = this.buildValidation();
+    this.isDisabled = this.validGroup.disabled;
 
-  public validGroup!: ValidGroup<T>;
-  public validArray!: ValidArray<T>;
+    this.validGroup.statusChanges.subscribe({
+      next: this.onValidGroupStatusChanged.bind(this),
+    });
+  }
+
+  protected abstract buildValidation(): ValidGroup;
+
+  private onValidGroupStatusChanged(status: ValidationState): void {
+    if (status === 'DISABLED') {
+      this.isDisabled = true;
+    } else {
+      this.isDisabled = false;
+    }
+  }
+}
+
+export abstract class BaseControlValidationComponent<T> implements IControlValueAccessor<T> {
   public validControl!: ValidControl<T>;
 
   public isDisabled: boolean = false;
 
-  protected initValidation(): void {
-    const form = this.buildValidation();
+  public validators!: ControlValidatorModel[];
 
-    if (this.validState !== null && this.validState !== undefined) {
-      this.validState.setBoundControl(form);
+  public readonly changed: Subject<T | null | undefined>;
 
-      this.validState.valueChanges.subscribe({
-        next: this.onValidStateValueChanged.bind(this),
-      });
+  constructor(control: TLControl | null | undefined) {
+    this.changed = new Subject<T | null | undefined>();
+
+    if (control === null || control === undefined) {
+      return;
     }
 
-    this.validation = form;
+    control.controlChanges.subscribe({
+      next: this.controlChanged.bind(this),
+    });
+  }
 
-    form.statusChanges.subscribe({
-      next: this.onValidationStatusChanges.bind(this),
+  public abstract writeValue(value: T | null | undefined): void;
+
+  public abstract getValue(): T | null | undefined;
+
+  public abstract validate(): ValidationState;
+
+  public abstract markAsTouched(): void;
+
+  private controlChanged(validControl: IValidControl | null | undefined): void {
+    this.validControl = validControl as ValidControl<T>;
+
+    if (this.validControl !== null && this.validControl !== undefined) {
+      this.validControl.setValueAccessor(this);
+      this.validators = this.validControl.validators;
+
+      this.validControl.statusChanges.subscribe({
+        next: this.onValidControlStatusChanged.bind(this),
+      });
+    }
+  }
+
+  private onValidControlStatusChanged(status: ValidationState): void {
+    if (status === 'DISABLED') {
+      this.isDisabled = true;
+    } else {
+      this.isDisabled = false;
+    }
+  }
+}
+
+export abstract class BaseValidationComponent<T> implements IControlValueAccessor<T> {
+  private _validControl: ValidControl<T> | null | undefined;
+
+  public validGroup!: ValidGroup;
+  public validators!: ControlValidatorModel[];
+
+  public isDisabled: boolean = false;
+
+  public readonly changed: Subject<T | null | undefined>;
+
+  constructor(control: TLControl | null | undefined) {
+    this.changed = new Subject<T | null | undefined>();
+
+    if (control === null || control === undefined) {
+      return;
+    }
+
+    control.controlChanges.subscribe({
+      next: this.controlChanged.bind(this),
     });
 
-    if (form instanceof ValidGroup) {
-      this.validGroup = form;
+    this.validGroup = this.buildValidation();
 
-      form.childValueChanges.subscribe({
-        next: this.onValidationChildValueChanged.bind(this),
-      });
-    } else if (form instanceof ValidArray) {
-      this.validArray = form;
+    this.validGroup.childValueChanges.subscribe({
+      next: this.onChildValidationChanged.bind(this),
+    });
+  }
 
-      form.childValueChanges.subscribe({
-        next: this.onValidationChildValueChanged.bind(this),
+  public abstract writeValue(value: T | null | undefined): void;
+
+  public abstract getValue(): T | null | undefined;
+
+  public validate(): ValidationState {
+    this.validGroup.checkGroups();
+    this.validGroup.validate(this.validGroup.inactiveGroups);
+    return this.validGroup.status;
+  }
+
+  public markAsTouched(): void {
+    this.validGroup.markAsTouched();
+  }
+
+  protected abstract buildValidation(): ValidGroup;
+
+  private controlChanged(validControl: IValidControl | null | undefined): void {
+    this._validControl = validControl as ValidControl<T>;
+
+    if (this._validControl !== null && this._validControl !== undefined) {
+      this._validControl.setValueAccessor(this);
+      this.validators = this._validControl.validators;
+
+      this._validControl.statusChanges.subscribe({
+        next: this.onValidControlStatusChanged.bind(this),
       });
-    } else if (form instanceof ValidControl) {
-      this.validControl = form;
     }
   }
 
-  protected abstract writeValue(value: T | undefined | null): void;
-  protected abstract buildValidation(): ValidState<T>;
-  protected abstract getValue(): T | undefined | null;
-
-  protected onChanged(): void {
-    this.changingValue = true;
-    this.validation.setValue(this.getValue());
-    this.changingValue = false;
+  private onChildValidationChanged(): void {
+    this.changed.next(this.getValue());
   }
 
-  private onValidationStatusChanges(status: 'VALID' | 'INVALID' | 'DISABLED') {
-    this.isDisabled = status === 'DISABLED';
-  }
-
-  private onValidationChildValueChanged(): void {
-    this.onChanged();
-  }
-
-  private onValidStateValueChanged(value: T | undefined | null): void {
-    if (this.changingValue === false) {
-      this.writeValue(value);
+  private onValidControlStatusChanged(status: ValidationState): void {
+    if (status === 'DISABLED') {
+      this.isDisabled = true;
+      this.validGroup.disable();
+    } else {
+      this.isDisabled = false;
+      this.validGroup.enable();
     }
   }
 }

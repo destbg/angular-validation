@@ -4,9 +4,8 @@ import { RequiredValidatorModel } from '../models/validator.model';
 // This way custom validation can be created for the required validator.
 // Example: boolean is false or array is empty.
 
-export function required(groups?: string[], severity?: string): RequiredValidatorModel {
+export function requiredValidator(groups?: string[]): RequiredValidatorModel {
   return {
     groups: groups ?? [],
-    severity: severity ?? 'ERROR',
   };
 }

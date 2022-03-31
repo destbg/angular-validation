@@ -1,11 +1,10 @@
 import { Observable } from 'rxjs';
+import { ValidationState } from '../helpers/validation-state';
 import { ValidationResultModel } from '../models/validation-result.model';
-import { ValidatorModel } from '../models/validator.model';
+import { ControlValidatorModel } from '../models/validator.model';
+import { ValidGroup } from '../valid-group';
 
-export interface IValidState {
-  /** The inactive groups of the valid state. */
-  inactiveGroups: string[];
-
+export interface IValidControl {
   /** Returns whether the valid state is required. */
   required: boolean;
 
@@ -13,19 +12,18 @@ export interface IValidState {
   errors: ValidationResultModel[];
 
   /** The groups that must be applied in order for the valid state to be enabled. */
-  groups: string[];
+  readonly groups: string[];
 
   /** The valid state's validators. */
-  validators: ValidatorModel[];
+  readonly validators: ControlValidatorModel[];
 
   /** A multicasting observable that emits a validation status whenever it is calculated for the valid state. */
-  statusChanges: Observable<'VALID' | 'INVALID' | 'DISABLED'>;
+  readonly statusChanges: Observable<ValidationState>;
 
   /** A multicasting observable of value changes for the valid state that emits every time the value of the valid state changes in the UI, but not programmatically. */
-  anyValueChanges: Observable<any | null | undefined>;
+  readonly anyValueChanges: Observable<any | null | undefined>;
 
-  /** The valid state's value. */
-  get anyValue(): any | undefined | null;
+  get anyValue(): any | null | undefined;
 
   /** Returns whether the valid state is valid. A valid state is considered valid if no validation errors exist with the current value. */
   get valid(): boolean;
@@ -40,7 +38,7 @@ export interface IValidState {
   get enabled(): boolean;
 
   /** Returns the validation status of the valid state. Possible values include: 'VALID', 'INVALID' or 'DISABLED'. */
-  get status(): 'VALID' | 'INVALID' | 'DISABLED';
+  get status(): ValidationState;
 
   /** Returns whether the valid state is pristine, meaning that the user has not yet changed the value in the UI. */
   get pristine(): boolean;
@@ -55,7 +53,7 @@ export interface IValidState {
   get untouched(): boolean;
 
   /** The validation model that the valid state is a part of. If the valid state is not a part of a validation model, returns undefined. */
-  get parent(): IValidState | undefined | null;
+  get parent(): ValidGroup | null | undefined;
 
   /** Validates the current valid state. */
   validate(inactiveGroups: string[]): ValidationResultModel[];
@@ -66,18 +64,9 @@ export interface IValidState {
   /** Enables the current valid state. Does nothing if already enabled. */
   enable(): void;
 
-  /** Tells the current valid state that it's parent control was disabled. Does nothing if already disabled. */
-  parentDisabled(): void;
-
-  /** Tells the current valid state that it's parent control was enabled. Does nothing if already enabled. */
-  parentEnabled(): void;
-
   /** Tells the current valid state that the it was touched. */
-  wasTouched(): void;
+  markAsTouched(): void;
 
   /** Used internally to set the parent for the valid state. */
-  setParent(parent: IValidState): void;
-
-  /** Used internally to set the bound control for the valid state. */
-  setBoundControl(control: IValidState): void;
+  setParent(parent: ValidGroup): void;
 }

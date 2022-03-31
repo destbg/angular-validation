@@ -1,17 +1,30 @@
-import { IValidState } from '../interfaces/valid-state.interface';
-import { ValidatorModel } from '../models/validator.model';
+import { IValidControl } from '../interfaces/valid-control.interface';
+import { ControlValidatorModel } from '../models/validator.model';
+import { ValidGroup } from '../valid-group';
 
-export function greaterThan(otherValidStateName: string, groups?: string[], severity?: string): ValidatorModel {
+export function greaterThanValidator(
+  otherValidControlName: string,
+  groups?: string[],
+  severity?: string
+): ControlValidatorModel {
   return {
-    fn: (validState: IValidState) => {
-      const value = validState.anyValue;
+    fn: (validControl: IValidControl) => {
+      const value = validControl.anyValue;
 
       // When the value is undefined or null, it should only be validated by the required validator.
       if (value === undefined || value === null) {
         return true;
       }
 
-      const otherValue = validState.parent?.validStates[otherValidStateName]?.anyValue;
+      if (validControl.parent === null || validControl.parent === undefined) {
+        return true;
+      }
+
+      let otherValue: any;
+
+      if (validControl.parent instanceof ValidGroup) {
+        otherValue = validControl.parent.validControls[otherValidControlName]?.anyValue;
+      }
 
       if (otherValue === undefined || otherValue === null) {
         return true;

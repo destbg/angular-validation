@@ -1,8 +1,12 @@
-import { IValidState } from '../interfaces/valid-state.interface';
-import { ValidatorModel } from '../models/validator.model';
+import { IValidControl } from '../interfaces/valid-control.interface';
+import { ControlValidatorModel } from '../models/validator.model';
 import { format } from '../utils/format.util';
 
-export function pattern(pattern: string | RegExp, groups?: string[], severity?: string): ValidatorModel {
+export function patternValidator(
+  pattern: string | RegExp,
+  groups?: string[],
+  severity?: string
+): ControlValidatorModel {
   let regex: RegExp;
   let regexStr: string;
 
@@ -26,8 +30,8 @@ export function pattern(pattern: string | RegExp, groups?: string[], severity?: 
   }
 
   return {
-    fn: (validState: IValidState) => {
-      const value = validState.anyValue;
+    fn: (validControl: IValidControl) => {
+      const value = validControl.anyValue;
 
       // When the value is undefined or null, it should only be validated by the required validator.
       if (value === undefined || value === null) {
