@@ -10,7 +10,11 @@ import { TestModel } from '../test.model';
 export class ValidationSubClassComponent extends BaseValidationComponent<TestModel> {
   private disableText: boolean = false;
 
+  public hideInputControl: boolean = true;
+
   public textControl!: ValidControl<string>;
+
+  public text2Control!: ValidControl<string>;
 
   constructor(@Self() control: TLControl) {
     super(control);
@@ -21,11 +25,17 @@ export class ValidationSubClassComponent extends BaseValidationComponent<TestMod
     this.validGroup.checkGroups();
   }
 
+  public onHideInputControl(): void {
+    this.hideInputControl = !this.hideInputControl;
+  }
+
   public writeValue(value: TestModel | null | undefined): void {
     if (value !== null && value !== undefined) {
       this.textControl.setValue(value.text);
+      this.text2Control.setValue(value.text2);
     } else {
       this.textControl.setValue('undefined value provided');
+      this.text2Control.setValue('undefined value provided 2');
     }
   }
 
@@ -36,9 +46,16 @@ export class ValidationSubClassComponent extends BaseValidationComponent<TestMod
       validators: [Guard.required(), Guard.notEqual(['testt', 'testtttttttt']), Guard.max(10)],
     });
 
+    this.text2Control = new ValidControl({
+      value: '',
+      groups: ['DisableText'],
+      validators: [Guard.required(), Guard.notEqual(['testt', 'testtttttttt']), Guard.max(10)],
+    });
+
     return new ValidGroup(
       {
         textControl: this.textControl,
+        text2Control: this.text2Control,
       },
       {
         DisableText: () => this.disableText,
@@ -49,6 +66,7 @@ export class ValidationSubClassComponent extends BaseValidationComponent<TestMod
   public getValue(): TestModel | null | undefined {
     return new TestModel({
       text: this.textControl.value,
+      text2: this.text2Control.value,
     });
   }
 }

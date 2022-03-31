@@ -5,6 +5,8 @@
   <div>
     Value inside the control: <b>{{ textControl.value }}</b>
   </div>
-  <app-input-control [validControl]="textControl"></app-input-control>
+  <app-input-control *ngIf="hideInputControl" [validControl]="textControl"></app-input-control>
+  <app-input-control *ngIf="hideInputControl" [validControl]="text2Control"></app-input-control>
   <button (click)="onDisableText()" [disabled]="isDisabled">Disable input</button>
+  <button (click)="onHideInputControl()" [disabled]="isDisabled">Hide input control</button>
 </div>

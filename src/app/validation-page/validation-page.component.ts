@@ -24,6 +24,7 @@ export class ValidationPageComponent extends BasePageValidationComponent impleme
     this.innerControl.setValue(
       new TestModel({
         text: 'test',
+        text2: 'test 2',
       })
     );
   }

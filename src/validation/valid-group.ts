@@ -176,6 +176,7 @@ export class ValidGroup extends ValidState {
     if (this._updatingChild === true) {
       return;
     }
+
     this._updatingChild = true;
     this.checkGroups();
     this._childValueChanged.next();
