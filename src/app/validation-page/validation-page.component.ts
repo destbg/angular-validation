@@ -25,6 +25,7 @@ export class ValidationPageComponent extends BasePageValidationComponent impleme
       new TestModel({
         text: 'test',
         text2: 'test 2',
+        text3: 'test 3',
       })
     );
   }

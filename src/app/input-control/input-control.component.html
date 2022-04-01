@@ -4,7 +4,7 @@
   </div>
   <input #input [disabled]="isDisabled" />
   <div *ngIf="validControl">
-    Control is: <b>{{ validControl.errors.length === 0 ? "valid" : "invalid" }}</b>
+    Control is: <b>{{ validControl.status }}</b>
     <div>
       errors:
       <span *ngFor="let error of validControl.errors">

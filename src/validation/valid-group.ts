@@ -23,11 +23,14 @@ export class ValidGroup extends ValidState {
       .filter((f) => f[1]())
       .map((f) => f[0]);
 
-    if (Array.isArray(validControls)) {
+    if (validControls === null || validControls === undefined) {
+      this.validControls = {};
+      this.validControlsArray = [];
+    } else if (Array.isArray(validControls)) {
       this.validControls = {};
       this.validControlsArray = validControls;
     } else {
-      this.validControls = validControls ?? {};
+      this.validControls = validControls;
       this.validControlsArray = Object.values(this.validControls);
     }
 

@@ -2,3 +2,15 @@
 <button (click)="onDisableInnerControl()">Disable inner control</button>
 <div>{{ getChildValue() }}</div>
 <div>Value changed on: {{ timestamp | date: "medium" }}</div>
+
+<div *ngIf="innerControl">
+  Control is: <b>{{ innerControl.status }}</b>
+  <div>
+    errors:
+    <span *ngFor="let error of innerControl.errors">
+      <span>{{ error.identifier }}</span>
+      <span> - </span>
+      <span>{{ error.format("{0} and {1} and {2} at most.") }}</span>
+    </span>
+  </div>
+</div>
