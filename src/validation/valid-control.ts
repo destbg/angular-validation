@@ -202,6 +202,8 @@ export class ValidControl<T> extends ValidState implements IValidControl {
     this._value = value;
     this._dirty = true;
 
+    this._valueChanges.next(value);
+
     if (this._parent !== null && this._parent !== undefined) {
       this.validate(this._parent.inactiveGroups);
     }
