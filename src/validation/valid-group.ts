@@ -185,7 +185,6 @@ export class ValidGroup extends ValidState {
     this._massUpdateCount--;
 
     if (this._massUpdateCount === 0) {
-      this.validControlStatusChanged();
       this._childValueChanged.next();
     }
   }
