@@ -120,7 +120,7 @@ export abstract class BaseValidationComponent<T> implements IControlValueAccesso
     });
 
     this.validGroup.statusChanges.subscribe({
-      next: this.onChanged.bind(this),
+      next: this.onStatusChanged.bind(this),
     });
   }
 

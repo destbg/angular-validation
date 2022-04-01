@@ -199,10 +199,6 @@ export class ValidGroup extends ValidState {
   }
 
   private validControlStatusChanged(): void {
-    if (this._status === 'DISABLED') {
-      return;
-    }
-
     let status: ValidationState = 'VALID';
 
     for (const validControl of this.validControlsArray) {

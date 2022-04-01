@@ -14,4 +14,15 @@
   <div>Group child changed on: {{ groupTimestamp | date: "medium" }}</div>
   <button (click)="onDisableText()" [disabled]="isDisabled">Disable input</button>
   <button (click)="onHideInputControl()" [disabled]="isDisabled">Hide input control</button>
+  <div *ngIf="validGroup">
+    Control is: <b>{{ validGroup.status }}</b>
+    <div>
+      errors:
+      <span *ngFor="let error of validGroup.errors">
+        <span>{{ error.identifier }}</span>
+        <span> - </span>
+        <span>{{ error.format("{0} and {1} and {2} at most.") }}</span>
+      </span>
+    </div>
+  </div>
 </div>
