@@ -63,6 +63,10 @@ export abstract class BaseControlValidationComponent<T> implements IControlValue
   public abstract markAsTouched(): void;
 
   private controlChanged(validControl: IValidControl | null | undefined): void {
+    if (this.validControl !== null && this.validControl !== undefined) {
+      this.validControl.setValueAccessor(undefined);
+    }
+
     this.validControl = validControl as ValidControl<T>;
 
     if (this.validControl !== null && this.validControl !== undefined) {
@@ -129,6 +133,10 @@ export abstract class BaseValidationComponent<T> implements IControlValueAccesso
   protected abstract buildValidation(): ValidGroup;
 
   private controlChanged(validControl: IValidControl | null | undefined): void {
+    if (this._validControl !== null && this._validControl !== undefined) {
+      this._validControl.setValueAccessor(undefined);
+    }
+
     this._validControl = validControl as ValidControl<T>;
 
     if (this._validControl !== null && this._validControl !== undefined) {

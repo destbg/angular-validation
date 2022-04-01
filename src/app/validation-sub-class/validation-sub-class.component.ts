@@ -56,7 +56,7 @@ export class ValidationSubClassComponent extends BaseValidationComponent<TestMod
 
     this.text3Control = new ValidControl({
       value: '',
-      groups: ['DisableText'],
+      groups: ['DisableHiddenText'],
       validators: [Guard.required(), Guard.notEqual(['testt', 'testtttttttt']), Guard.max(10)],
     });
 

@@ -3,7 +3,9 @@
     I am currently: <b>{{ isDisabled ? "disabled" : "enabled" }}</b>
   </div>
   <div>
-    Value inside the control: <b>{{ textControl.value }}</b>
+    Values inside the control: <b>{{ textControl.value }}</b
+    >, <b>{{ text2Control.value }}</b
+    >, <b>{{ text3Control.value }}</b>
   </div>
   <app-input-control *ngIf="hideInputControl" [validControl]="textControl"></app-input-control>
   <app-input-control *ngIf="hideInputControl" [validControl]="text2Control"></app-input-control>

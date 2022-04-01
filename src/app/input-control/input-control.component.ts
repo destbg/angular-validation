@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Self, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, Self, ViewChild } from '@angular/core';
 import { TLControl } from 'src/validation';
 import { ValidationState } from 'src/validation/helpers/validation-state';
 import { BaseControlValidationComponent } from 'src/validation/validation-component';
@@ -19,6 +19,10 @@ export class InputControlComponent extends BaseControlValidationComponent<string
     this.input!.nativeElement.addEventListener('keyup', () => {
       this.changed.next(this.getValue());
     });
+
+    if (this.validControl !== null && this.validControl !== undefined) {
+      this.writeValue(this.validControl.value);
+    }
   }
 
   public writeValue(value: string | null | undefined): void {

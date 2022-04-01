@@ -177,14 +177,16 @@ export class ValidControl<T> extends ValidState implements IValidControl {
     return results;
   }
 
-  public setValueAccessor(valueAccessor: IControlValueAccessor<T>): void {
+  public setValueAccessor(valueAccessor: IControlValueAccessor<T> | null | undefined): void {
     this._valueAccessor = valueAccessor;
 
-    valueAccessor.writeValue(this._value);
+    if (valueAccessor !== null && valueAccessor !== undefined) {
+      valueAccessor.writeValue(this._value);
 
-    valueAccessor.changed.subscribe({
-      next: this.onValueAccessorValueChanged.bind(this),
-    });
+      valueAccessor.changed.subscribe({
+        next: this.onValueAccessorValueChanged.bind(this),
+      });
+    }
   }
 
   protected onDisable(): void {}
