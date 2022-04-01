@@ -10,8 +10,8 @@
   <app-input-control *ngIf="hideInputControl" [validControl]="textControl"></app-input-control>
   <app-input-control *ngIf="hideInputControl" [validControl]="text2Control"></app-input-control>
   <app-input-control *ngIf="!hideInputControl" [validControl]="text3Control"></app-input-control>
-  <div>Value changed on: {{ timestamp | date: "medium" }}</div>
-  <div>Group child changed on: {{ groupTimestamp | date: "medium" }}</div>
+  <div>Value changed on: {{ timestamp | date: "h:m:s.SSS" }}</div>
+  <div>Group child changed on: {{ groupTimestamp | date: "h:m:s.SSS" }}</div>
   <button (click)="onDisableText()" [disabled]="isDisabled">Disable input</button>
   <button (click)="onHideInputControl()" [disabled]="isDisabled">Hide input control</button>
 </div>

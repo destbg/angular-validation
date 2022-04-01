@@ -1,7 +1,7 @@
 <app-validation-sub-class [validControl]="innerControl"> </app-validation-sub-class>
 <button (click)="onDisableInnerControl()">Disable inner control</button>
 <div>{{ getChildValue() }}</div>
-<div>Value changed on: {{ timestamp | date: "medium" }}</div>
+<div>Value changed on: {{ timestamp | date: "h:m:s.SSS" }}</div>
 
 <div *ngIf="innerControl">
   Control is: <b>{{ innerControl.status }}</b>
