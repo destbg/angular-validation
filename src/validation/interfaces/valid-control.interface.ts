@@ -40,9 +40,6 @@ export interface IValidControl {
   /** Returns the validation status of the valid state. Possible values include: 'VALID', 'INVALID' or 'DISABLED'. */
   get status(): ValidationState;
 
-  /** Returns whether the valid state is pristine, meaning that the user has not yet changed the value in the UI. */
-  get pristine(): boolean;
-
   /** Returns whether the valid state is dirty, meaning that the user has changed the value in the UI. */
   get dirty(): boolean;
 

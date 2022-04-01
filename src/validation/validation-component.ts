@@ -41,9 +41,11 @@ export abstract class BaseControlValidationComponent<T> implements IControlValue
   public validators!: ControlValidatorModel[];
 
   public readonly changed: Subject<T | null | undefined>;
+  public readonly statusChanged: Subject<ValidationState>;
 
   constructor(control: TLControl | null | undefined) {
     this.changed = new Subject<T | null | undefined>();
+    this.statusChanged = new Subject<ValidationState>();
 
     if (control === null || control === undefined) {
       return;
@@ -97,9 +99,11 @@ export abstract class BaseValidationComponent<T> implements IControlValueAccesso
   public isDisabled: boolean = false;
 
   public readonly changed: Subject<T | null | undefined>;
+  public readonly statusChanged: Subject<ValidationState>;
 
   constructor(control: TLControl | null | undefined) {
     this.changed = new Subject<T | null | undefined>();
+    this.statusChanged = new Subject<ValidationState>();
 
     if (control === null || control === undefined) {
       return;
@@ -112,7 +116,11 @@ export abstract class BaseValidationComponent<T> implements IControlValueAccesso
     this.validGroup = this.buildValidation();
 
     this.validGroup.childValueChanges.subscribe({
-      next: this.onChildValidationChanged.bind(this),
+      next: this.onChanged.bind(this),
+    });
+
+    this.validGroup.statusChanges.subscribe({
+      next: this.onChanged.bind(this),
     });
   }
 
@@ -132,6 +140,14 @@ export abstract class BaseValidationComponent<T> implements IControlValueAccesso
 
   protected abstract buildValidation(): ValidGroup;
 
+  protected onChanged(): void {
+    this.changed.next(this.getValue());
+  }
+
+  protected onStatusChanged(): void {
+    this.statusChanged.next(this.validGroup.status);
+  }
+
   private controlChanged(validControl: IValidControl | null | undefined): void {
     if (this._validControl !== null && this._validControl !== undefined) {
       this._validControl.setValueAccessor(undefined);
@@ -147,10 +163,6 @@ export abstract class BaseValidationComponent<T> implements IControlValueAccesso
         next: this.onValidControlStatusChanged.bind(this),
       });
     }
-  }
-
-  private onChildValidationChanged(): void {
-    this.changed.next(this.getValue());
   }
 
   private onValidControlStatusChanged(status: ValidationState): void {

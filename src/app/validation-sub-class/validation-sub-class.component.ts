@@ -11,6 +11,8 @@ export class ValidationSubClassComponent extends BaseValidationComponent<TestMod
   private disableText: boolean = false;
 
   public hideInputControl: boolean = true;
+  public timestamp: Date = new Date();
+  public groupTimestamp: Date = new Date();
 
   public textControl!: ValidControl<string>;
   public text2Control!: ValidControl<string>;
@@ -60,7 +62,19 @@ export class ValidationSubClassComponent extends BaseValidationComponent<TestMod
       validators: [Guard.required(), Guard.notEqual(['testt', 'testtttttttt']), Guard.max(10)],
     });
 
-    return new ValidGroup(
+    this.textControl.valueChanges.subscribe({
+      next: this.updateTimestamp.bind(this),
+    });
+
+    this.text2Control.valueChanges.subscribe({
+      next: this.updateTimestamp.bind(this),
+    });
+
+    this.text3Control.valueChanges.subscribe({
+      next: this.updateTimestamp.bind(this),
+    });
+
+    const group = new ValidGroup(
       {
         textControl: this.textControl,
         text2Control: this.text2Control,
@@ -71,6 +85,14 @@ export class ValidationSubClassComponent extends BaseValidationComponent<TestMod
         DisableHiddenText: () => !this.hideInputControl,
       }
     );
+
+    group.childValueChanges.subscribe({
+      next: () => {
+        this.groupTimestamp = new Date();
+      },
+    });
+
+    return group;
   }
 
   public getValue(): TestModel | null | undefined {
@@ -79,5 +101,9 @@ export class ValidationSubClassComponent extends BaseValidationComponent<TestMod
       text2: this.text2Control.value,
       text3: this.text3Control.value,
     });
+  }
+
+  private updateTimestamp(): void {
+    this.timestamp = new Date();
   }
 }

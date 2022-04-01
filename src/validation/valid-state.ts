@@ -8,7 +8,6 @@ export abstract class ValidState {
 
   protected _status: ValidationState;
   protected _disabled: boolean;
-  protected _pristine: boolean;
   protected _dirty: boolean;
   protected _touched: boolean;
   protected _parent: ValidGroup | null | undefined;
@@ -16,7 +15,6 @@ export abstract class ValidState {
   constructor() {
     this._status = 'VALID';
     this._disabled = false;
-    this._pristine = true;
     this._dirty = false;
     this._touched = false;
     this.groups = [];
@@ -67,11 +65,6 @@ export abstract class ValidState {
   /** Returns whether the valid state is enabled, meaning that the valid state is included in ancestor calculations of validity or value. */
   public get enabled(): boolean {
     return this._disabled === false;
-  }
-
-  /** Returns whether the valid state is pristine, meaning that the user has not yet changed the value in the UI. */
-  public get pristine(): boolean {
-    return this._pristine === true;
   }
 
   /** Returns whether the valid state is dirty, meaning that the user has changed the value in the UI. */
@@ -147,9 +140,7 @@ export abstract class ValidState {
   protected abstract onTouched(): void;
 
   protected setStatus(value: ValidationState, options?: { emitEvent: boolean | undefined }) {
-    const equalsOldValue = value === this._status;
-
-    if (!equalsOldValue) {
+    if (value !== this._status) {
       this._status = value;
 
       if (options !== null && options !== undefined) {

@@ -8,7 +8,7 @@ import { ValidState } from './valid-state';
 export class ValidGroup extends ValidState {
   private readonly subscriptions: [Subscription, Subscription][];
   private readonly _childValueChanged: Subject<void>;
-  private _updatingChild: boolean = false;
+  private _massUpdateCount: number = 0;
 
   constructor(validControls?: { [key: string]: IValidControl } | IValidControl[], groups?: { [key: string]: () => boolean }) {
     super();
@@ -175,20 +175,43 @@ export class ValidGroup extends ValidState {
     }
   }
 
+  /** @internal */
+  startMassUpdate(): void {
+    this._massUpdateCount++;
+  }
+
+  /** @internal */
+  endMassUpdate(): void {
+    this._massUpdateCount--;
+
+    if (this._massUpdateCount === 0) {
+      this.validControlStatusChanged();
+      this._childValueChanged.next();
+    }
+  }
+
   private validControlValueChanged(): void {
-    if (this._updatingChild === true) {
+    if (this._massUpdateCount > 0) {
       return;
     }
 
-    this._updatingChild = true;
     this.checkGroups();
     this._childValueChanged.next();
-    this._updatingChild = false;
   }
 
-  private validControlStatusChanged(status: ValidationState): void {
-    if (status === 'INVALID') {
-      this.setStatus(status);
+  private validControlStatusChanged(): void {
+    if (this._status === 'DISABLED') {
+      return;
     }
+
+    let status: ValidationState = 'VALID';
+
+    for (const validControl of this.validControlsArray) {
+      if (validControl.status === 'INVALID') {
+        status = 'INVALID';
+      }
+    }
+
+    this.setStatus(status);
   }
 }

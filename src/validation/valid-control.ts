@@ -3,16 +3,16 @@ import { ValidationState } from './helpers/validation-state';
 import { IControlValueAccessor } from './interfaces/control-value-accessor.interface';
 import { IValidControl } from './interfaces/valid-control.interface';
 import { ValidationResultModel } from './models/validation-result.model';
-import { ControlValidatorModel, RequiredValidatorModel } from './models/validator.model';
+import { ControlValidatorModel } from './models/validator.model';
 import { ValidControlBuilder } from './valid-control-builder';
 import { ValidState } from './valid-state';
+import { ValueChangeModel } from './value-change.model';
 
 export class ValidControl<T> extends ValidState implements IValidControl {
   private readonly _valueChanges: Subject<T | null | undefined>;
 
   private _valueAccessor: IControlValueAccessor<T> | null | undefined;
   private _value: T | null | undefined;
-  private _initialValue: T | null | undefined;
 
   constructor(builder?: ValidControlBuilder<T>) {
     super();
@@ -20,7 +20,6 @@ export class ValidControl<T> extends ValidState implements IValidControl {
     this.validators = [];
 
     if (builder !== null && builder !== undefined) {
-      this._initialValue = builder.value;
       this._value = builder.value;
 
       if (builder.disabled !== null && builder.disabled !== undefined) {
@@ -83,23 +82,21 @@ export class ValidControl<T> extends ValidState implements IValidControl {
 
   /** The valid state's value. */
   public get anyValue(): any | null | undefined {
-    return this._value;
+    return this.value;
   }
 
-  /** The first value provided to the valid state. */
-  public get initialValue(): T | null | undefined {
-    return this._initialValue;
-  }
-
-  public setValue(value: T | null | undefined, options?: { emitEvent: boolean | undefined }) {
+  public setValue(value: T | null | undefined, options?: ValueChangeModel) {
     this._value = value;
+
+    if (this._parent !== null && this._parent !== undefined) {
+      this._parent.startMassUpdate();
+    }
 
     if (this._valueAccessor !== null && this._valueAccessor !== undefined) {
       this._valueAccessor.writeValue(this._value);
     }
 
     this._dirty = true;
-    this._pristine = this._initialValue === value;
 
     if (options !== null && options !== undefined) {
       if (options.emitEvent === null || options.emitEvent === undefined || options.emitEvent === true) {
@@ -107,6 +104,10 @@ export class ValidControl<T> extends ValidState implements IValidControl {
       }
     } else {
       this._valueChanges.next(value);
+    }
+
+    if (this._parent !== null && this._parent !== undefined) {
+      this._parent.endMassUpdate();
     }
   }
 
@@ -186,6 +187,10 @@ export class ValidControl<T> extends ValidState implements IValidControl {
       valueAccessor.changed.subscribe({
         next: this.onValueAccessorValueChanged.bind(this),
       });
+
+      valueAccessor.statusChanged.subscribe({
+        next: this.onValueAccessorStatusChanged.bind(this),
+      });
     }
   }
 
@@ -194,10 +199,18 @@ export class ValidControl<T> extends ValidState implements IValidControl {
   protected onTouched(): void {}
 
   private onValueAccessorValueChanged(value: T | null | undefined): void {
+    this._value = value;
+    this._dirty = true;
+
     if (this._parent !== null && this._parent !== undefined) {
       this.validate(this._parent.inactiveGroups);
     }
+  }
 
-    this.setValue(value);
+  private onValueAccessorStatusChanged(status: ValidationState): void {
+    if (this._status !== status) {
+      this._status = status;
+      this._statusChanges.next(status);
+    }
   }
 }

@@ -59,6 +59,8 @@ export class ValidationPageComponent extends BasePageValidationComponent impleme
       },
     });
 
+    console.log(group);
+
     return group;
   }
 }
