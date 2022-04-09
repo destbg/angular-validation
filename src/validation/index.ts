@@ -3,7 +3,9 @@ import { ValidControl } from './valid-control';
 import { ValidState } from './valid-state';
 import { Guard } from './guard';
 import { TLControl } from './tl-control';
-import { BaseControlValidationComponent, BasePageValidationComponent, BaseValidationComponent } from './validation-component';
+import { BaseControlComponent, BasePageComponent, BaseComponent } from './component';
+import { SetValueModel } from './set-value.model';
+import { BaseReactiveFormsComponent } from './reactive-forms-component';
 
 export {
   ValidGroup,
@@ -11,7 +13,9 @@ export {
   ValidState,
   Guard,
   TLControl,
-  BasePageValidationComponent,
-  BaseControlValidationComponent,
-  BaseValidationComponent
+  BasePageComponent,
+  BaseControlComponent,
+  BaseComponent,
+  BaseReactiveFormsComponent,
+  SetValueModel
 };

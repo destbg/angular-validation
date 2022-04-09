@@ -1,12 +1,12 @@
 import { BehaviorSubject, Observable } from 'rxjs';
-import { ValidationState } from './helpers/validation-state';
+import { ValidationStatus } from './helpers/validation-status';
 import { ValidationResultModel } from './models/validation-result.model';
 import { ValidGroup } from './valid-group';
 
 export abstract class ValidState {
-  protected readonly _statusChanges: BehaviorSubject<ValidationState>;
+  protected readonly _statusChanges: BehaviorSubject<ValidationStatus>;
 
-  protected _status: ValidationState;
+  protected _status: ValidationStatus;
   protected _disabled: boolean;
   protected _dirty: boolean;
   protected _touched: boolean;
@@ -23,7 +23,7 @@ export abstract class ValidState {
     this.errors = [];
     this.requiredGroups = [];
 
-    this._statusChanges = new BehaviorSubject<ValidationState>(this._status);
+    this._statusChanges = new BehaviorSubject<ValidationStatus>(this._status);
 
     this.statusChanges = this._statusChanges.asObservable();
   }
@@ -41,10 +41,10 @@ export abstract class ValidState {
   public groups: string[];
 
   /** A multicasting observable that emits a validation status whenever it is calculated for the valid state. */
-  public readonly statusChanges: Observable<ValidationState>;
+  public readonly statusChanges: Observable<ValidationStatus>;
 
   /** Returns the validation status of the valid state. Possible values include: 'VALID', 'INVALID' or 'DISABLED'. */
-  public get status(): ValidationState {
+  public get status(): ValidationStatus {
     return this._status;
   }
 
@@ -146,7 +146,7 @@ export abstract class ValidState {
 
   protected abstract onTouched(): void;
 
-  protected setStatus(value: ValidationState, options?: { emitEvent: boolean | undefined }) {
+  protected setStatus(value: ValidationStatus, options?: { emitEvent: boolean | undefined }) {
     if (value !== this._status) {
       this._status = value;
 

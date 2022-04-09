@@ -1,5 +1,5 @@
 import { Observable, Subject, Subscription } from 'rxjs';
-import { ValidationState } from './helpers/validation-state';
+import { ValidationStatus } from './helpers/validation-status';
 import { IValidControl } from './interfaces/valid-control.interface';
 import { ValidationResultModel } from './models/validation-result.model';
 import { ValidatorModel } from './models/validator.model';
@@ -158,7 +158,7 @@ export class ValidGroup extends ValidState {
   public clear(): void {
     while (this.validControlsArray.length > 0) {
       const validControl = this.validControlsArray[0];
-      
+
       const validControlName = Object.entries(this.validControls)
         .find(f => f[1] === validControl)?.[0];
 
@@ -229,7 +229,7 @@ export class ValidGroup extends ValidState {
   }
 
   private validControlStatusChanged(): void {
-    let status: ValidationState = 'VALID';
+    let status: ValidationStatus = 'VALID';
 
     for (const validControl of this.validControlsArray) {
       if (validControl.status === 'INVALID') {

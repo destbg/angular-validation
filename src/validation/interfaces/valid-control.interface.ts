@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { ValidationState } from '../helpers/validation-state';
+import { ValidationStatus } from '../helpers/validation-status';
 import { ValidationResultModel } from '../models/validation-result.model';
 import { ControlValidatorModel } from '../models/validator.model';
 import { ValidGroup } from '../valid-group';
@@ -18,7 +18,7 @@ export interface IValidControl {
   readonly validators: ControlValidatorModel[];
 
   /** A multicasting observable that emits a validation status whenever it is calculated for the valid state. */
-  readonly statusChanges: Observable<ValidationState>;
+  readonly statusChanges: Observable<ValidationStatus>;
 
   /** A multicasting observable of value changes for the valid state that emits every time the value of the valid state changes in the UI, but not programmatically. */
   readonly anyValueChanges: Observable<any | null | undefined>;
@@ -38,7 +38,7 @@ export interface IValidControl {
   get enabled(): boolean;
 
   /** Returns the validation status of the valid state. Possible values include: 'VALID', 'INVALID' or 'DISABLED'. */
-  get status(): ValidationState;
+  get status(): ValidationStatus;
 
   /** Returns whether the valid state is dirty, meaning that the user has changed the value in the UI. */
   get dirty(): boolean;

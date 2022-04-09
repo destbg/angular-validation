@@ -1,12 +1,12 @@
 import { Subject } from 'rxjs';
-import { ValidationState } from '../helpers/validation-state';
+import { ValidationStatus } from '../helpers/validation-status';
 
 export interface IControlValueAccessor<T> {
   readonly changed: Subject<T | null | undefined>;
-  readonly statusChanged: Subject<ValidationState>;
+  readonly statusChanged: Subject<ValidationStatus>;
 
   writeValue(value: T | null | undefined): void;
   getValue(): T | null | undefined;
-  validate(): ValidationState;
+  validate(): ValidationStatus;
   markAsTouched(): void;
 }

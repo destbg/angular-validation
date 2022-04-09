@@ -1,12 +1,13 @@
-import { Component, Self } from '@angular/core';
-import { BaseValidationComponent, Guard, TLControl, ValidControl, ValidGroup } from 'src/validation';
+import { Component, OnInit, Self } from '@angular/core';
+import { BaseComponent, Guard, TLControl, ValidControl, ValidGroup } from 'src/validation';
+import { Loader } from '../loader';
 import { TestModel } from '../test.model';
 
 @Component({
   selector: 'app-validation-sub-class',
   templateUrl: './validation-sub-class.component.html',
 })
-export class ValidationSubClassComponent extends BaseValidationComponent<TestModel> {
+export class ValidationSubClassComponent extends BaseComponent<TestModel> implements OnInit {
   private disableText: boolean = false;
 
   public hideInputControl: boolean = true;
@@ -17,8 +18,16 @@ export class ValidationSubClassComponent extends BaseValidationComponent<TestMod
   public text2Control!: ValidControl<string>;
   public text3Control!: ValidControl<string>;
 
+  private readonly loader: Loader;
+
   constructor(@Self() control: TLControl) {
     super(control);
+
+    this.loader = new Loader(this.getNomenclatures.bind(this));
+  }
+
+  public ngOnInit(): void {
+    this.loader.load();
   }
 
   public onDisableText(): void {
@@ -31,15 +40,17 @@ export class ValidationSubClassComponent extends BaseValidationComponent<TestMod
   }
 
   public writeValue(value: TestModel | null | undefined): void {
-    if (value !== null && value !== undefined) {
-      this.textControl.setValue(value.text);
-      this.text2Control.setValue(value.text2);
-      this.text3Control.setValue(value.text3);
-    } else {
-      this.textControl.setValue('undefined value provided');
-      this.text2Control.setValue('undefined value provided 2');
-      this.text3Control.setValue('undefined value provided 3');
-    }
+    this.loader.load(() => {
+      if (value !== null && value !== undefined) {
+        this.textControl.setValue(value.text);
+        this.text2Control.setValue(value.text2);
+        this.text3Control.setValue(value.text3);
+      } else {
+        this.textControl.setValue('undefined value provided');
+        this.text2Control.setValue('undefined value provided 2');
+        this.text3Control.setValue('undefined value provided 3');
+      }
+    });
   }
 
   protected buildValidation(): ValidGroup {
@@ -104,5 +115,11 @@ export class ValidationSubClassComponent extends BaseValidationComponent<TestMod
 
   private updateTimestamp(): void {
     this.timestamp = new Date();
+  }
+
+  private getNomenclatures(): void {
+    setTimeout(() => {
+      this.loader.complete();
+    }, 1000);
   }
 }

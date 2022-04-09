@@ -1,12 +1,12 @@
 import { AfterViewInit, Component, ElementRef, Input, Self, ViewChild } from '@angular/core';
-import { BaseControlValidationComponent, TLControl } from 'src/validation';
-import { ValidationState } from 'src/validation/helpers/validation-state';
+import { BaseControlComponent, TLControl } from 'src/validation';
+import { ValidationStatus } from 'src/validation/helpers/validation-status';
 
 @Component({
   selector: 'app-input-control',
   templateUrl: './input-control.component.html',
 })
-export class InputControlComponent extends BaseControlValidationComponent<string> implements AfterViewInit {
+export class InputControlComponent extends BaseControlComponent<string> implements AfterViewInit {
   @Input()
   public label: string | undefined;
 
@@ -49,9 +49,9 @@ export class InputControlComponent extends BaseControlValidationComponent<string
     return undefined;
   }
 
-  public validate(): ValidationState {
+  public validate(): ValidationStatus {
     return 'VALID';
   }
 
-  public markAsTouched(): void {}
+  public markAsTouched(): void { }
 }

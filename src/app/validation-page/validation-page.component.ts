@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { BasePageValidationComponent, ValidControl, ValidGroup } from 'src/validation';
+import { BasePageComponent, ValidControl, ValidGroup } from 'src/validation';
 import { TestModel } from '../test.model';
 
 @Component({
   selector: 'app-validation-page',
   templateUrl: './validation-page.component.html',
 })
-export class ValidationPageComponent extends BasePageValidationComponent implements OnInit {
+export class ValidationPageComponent extends BasePageComponent implements OnInit {
   private disableInnerControl: boolean = false;
 
   public timestamp: Date = new Date();
@@ -18,9 +18,7 @@ export class ValidationPageComponent extends BasePageValidationComponent impleme
     super();
   }
 
-  public async ngOnInit(): Promise<void> {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
+  public ngOnInit(): void {
     this.innerControl.setValue(
       new TestModel({
         text: 'test',
@@ -64,8 +62,6 @@ export class ValidationPageComponent extends BasePageValidationComponent impleme
         this.timestamp = new Date();
       },
     });
-
-    console.log(group);
 
     return group;
   }

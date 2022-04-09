@@ -1,12 +1,12 @@
 import { Subject, Observable } from 'rxjs';
-import { ValidationState } from './helpers/validation-state';
+import { ValidationStatus } from './helpers/validation-status';
 import { IControlValueAccessor } from './interfaces/control-value-accessor.interface';
 import { IValidControl } from './interfaces/valid-control.interface';
 import { ValidationResultModel } from './models/validation-result.model';
 import { ControlValidatorModel } from './models/validator.model';
 import { ValidControlBuilder } from './valid-control-builder';
 import { ValidState } from './valid-state';
-import { ValueChangeModel } from './value-change.model';
+import { SetValueModel } from './set-value.model';
 
 
 export class ValidControl<T> extends ValidState implements IValidControl {
@@ -86,7 +86,7 @@ export class ValidControl<T> extends ValidState implements IValidControl {
     return this.value;
   }
 
-  public setValue(value: T | null | undefined, options?: ValueChangeModel) {
+  public setValue(value: T | null | undefined, options?: SetValueModel): void {
     this._value = value;
 
     if (this._parent !== null && this._parent !== undefined) {
@@ -166,7 +166,7 @@ export class ValidControl<T> extends ValidState implements IValidControl {
       }
     }
 
-    let status: ValidationState;
+    let status: ValidationStatus;
 
     if (this._valueAccessor !== null && this._valueAccessor !== undefined) {
       const valueAccessorState = this._valueAccessor.validate();
@@ -205,8 +205,8 @@ export class ValidControl<T> extends ValidState implements IValidControl {
     }
   }
 
-  protected onDisable(): void {}
-  protected onEnable(): void {}
+  protected onDisable(): void { }
+  protected onEnable(): void { }
 
   protected onTouched(): void {
     this._valueAccessor?.markAsTouched();
@@ -222,7 +222,7 @@ export class ValidControl<T> extends ValidState implements IValidControl {
     this.validate(this._parent?.inactiveGroups ?? []);
   }
 
-  private onValueAccessorStatusChanged(status: ValidationState): void {
+  private onValueAccessorStatusChanged(status: ValidationStatus): void {
     if (this._status !== status) {
       this._status = status;
       this._statusChanges.next(status);

@@ -1,3 +1,3 @@
-export class ValueChangeModel {
+export class SetValueModel {
   public emitEvent: boolean | undefined;
 }

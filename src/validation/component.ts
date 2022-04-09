@@ -1,15 +1,13 @@
 import { Subject } from 'rxjs';
-import { ValidationState } from './helpers/validation-state';
+import { ValidationStatus } from './helpers/validation-status';
 import { IControlValueAccessor } from './interfaces/control-value-accessor.interface';
 import { IValidControl } from './interfaces/valid-control.interface';
-import { ControlValidatorModel, ValidatorModel } from './models/validator.model';
 import { TLControl } from './tl-control';
 import { ValidControl } from './valid-control';
 import { ValidGroup } from './valid-group';
 
-export abstract class BasePageValidationComponent {
+export abstract class BasePageComponent {
   public validGroup!: ValidGroup;
-  public validators!: ValidatorModel[];
 
   public isDisabled: boolean = false;
 
@@ -24,7 +22,7 @@ export abstract class BasePageValidationComponent {
 
   protected abstract buildValidation(): ValidGroup;
 
-  private onValidGroupStatusChanged(status: ValidationState): void {
+  private onValidGroupStatusChanged(status: ValidationStatus): void {
     if (status === 'DISABLED') {
       this.isDisabled = true;
     } else {
@@ -33,19 +31,17 @@ export abstract class BasePageValidationComponent {
   }
 }
 
-export abstract class BaseControlValidationComponent<T> implements IControlValueAccessor<T> {
+export abstract class BaseControlComponent<T> implements IControlValueAccessor<T> {
   public validControl!: ValidControl<T>;
 
   public isDisabled: boolean = false;
 
-  public validators!: ControlValidatorModel[];
-
   public readonly changed: Subject<T | null | undefined>;
-  public readonly statusChanged: Subject<ValidationState>;
+  public readonly statusChanged: Subject<ValidationStatus>;
 
   constructor(control: TLControl | null | undefined) {
     this.changed = new Subject<T | null | undefined>();
-    this.statusChanged = new Subject<ValidationState>();
+    this.statusChanged = new Subject<ValidationStatus>();
 
     if (control === null || control === undefined) {
       return;
@@ -60,7 +56,7 @@ export abstract class BaseControlValidationComponent<T> implements IControlValue
 
   public abstract getValue(): T | null | undefined;
 
-  public abstract validate(): ValidationState;
+  public abstract validate(): ValidationStatus;
 
   public abstract markAsTouched(): void;
 
@@ -73,7 +69,6 @@ export abstract class BaseControlValidationComponent<T> implements IControlValue
 
     if (this.validControl !== null && this.validControl !== undefined) {
       this.validControl.setValueAccessor(this);
-      this.validators = this.validControl.validators;
 
       this.validControl.statusChanges.subscribe({
         next: this.onValidControlStatusChanged.bind(this),
@@ -81,7 +76,7 @@ export abstract class BaseControlValidationComponent<T> implements IControlValue
     }
   }
 
-  private onValidControlStatusChanged(status: ValidationState): void {
+  private onValidControlStatusChanged(status: ValidationStatus): void {
     if (status === 'DISABLED') {
       this.isDisabled = true;
     } else {
@@ -90,20 +85,19 @@ export abstract class BaseControlValidationComponent<T> implements IControlValue
   }
 }
 
-export abstract class BaseValidationComponent<T> implements IControlValueAccessor<T> {
+export abstract class BaseComponent<T> implements IControlValueAccessor<T> {
   private _validControl: ValidControl<T> | null | undefined;
 
   public validGroup!: ValidGroup;
-  public validators!: ControlValidatorModel[];
 
   public isDisabled: boolean = false;
 
   public readonly changed: Subject<T | null | undefined>;
-  public readonly statusChanged: Subject<ValidationState>;
+  public readonly statusChanged: Subject<ValidationStatus>;
 
   constructor(control: TLControl | null | undefined) {
     this.changed = new Subject<T | null | undefined>();
-    this.statusChanged = new Subject<ValidationState>();
+    this.statusChanged = new Subject<ValidationStatus>();
 
     if (control === null || control === undefined) {
       return;
@@ -128,7 +122,7 @@ export abstract class BaseValidationComponent<T> implements IControlValueAccesso
 
   public abstract getValue(): T | null | undefined;
 
-  public validate(): ValidationState {
+  public validate(): ValidationStatus {
     this.validGroup.checkGroups();
     this.validGroup.validate(this.validGroup.inactiveGroups);
     return this.validGroup.status;
@@ -157,7 +151,6 @@ export abstract class BaseValidationComponent<T> implements IControlValueAccesso
 
     if (this._validControl !== null && this._validControl !== undefined) {
       this._validControl.setValueAccessor(this);
-      this.validators = this._validControl.validators;
 
       this._validControl.statusChanges.subscribe({
         next: this.onValidControlStatusChanged.bind(this),
@@ -165,7 +158,7 @@ export abstract class BaseValidationComponent<T> implements IControlValueAccesso
     }
   }
 
-  private onValidControlStatusChanged(status: ValidationState): void {
+  private onValidControlStatusChanged(status: ValidationStatus): void {
     if (status === 'DISABLED') {
       this.isDisabled = true;
       this.validGroup.disable();
