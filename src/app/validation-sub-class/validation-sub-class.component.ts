@@ -1,6 +1,5 @@
 import { Component, Self } from '@angular/core';
-import { Guard, TLControl, ValidControl, ValidGroup } from 'src/validation';
-import { BaseValidationComponent } from 'src/validation/validation-component';
+import { BaseValidationComponent, Guard, TLControl, ValidControl, ValidGroup } from 'src/validation';
 import { TestModel } from '../test.model';
 
 @Component({

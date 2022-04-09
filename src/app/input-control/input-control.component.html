@@ -1,10 +1,11 @@
 <div style="padding: 1em; border: 2px solid green">
   <div>
-    I am currently: <b>{{ isDisabled ? "disabled" : "enabled" }}</b>
+    I am currently: <strong>{{ isDisabled ? "disabled" : "enabled" }}</strong>
   </div>
-  <input #input [disabled]="isDisabled" />
+  <label for="input">{{ label }}</label>
+  <input #input id="input" [disabled]="isDisabled" />
   <div *ngIf="validControl">
-    Control is: <b>{{ validControl.status }}</b>
+    Control is: <strong>{{ validControl.status }}</strong>
     <div>
       errors:
       <span *ngFor="let error of validControl.errors">

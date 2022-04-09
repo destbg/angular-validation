@@ -12,11 +12,7 @@ export function exactLengthValidator(length: number, groups?: string[], severity
         return true;
       }
 
-      if (typeof value === 'string') {
-        if (value.length !== length) {
-          return false;
-        }
-      } else if (Array.isArray(value)) {
+      if (typeof value === 'string' || Array.isArray(value)) {
         if (value.length !== length) {
           return false;
         }

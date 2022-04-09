@@ -12,20 +12,12 @@ export function rangeValidator(min: number, max: number, groups?: string[], seve
         return true;
       }
 
-      if (typeof value === 'string') {
+      if (typeof value === 'string' || Array.isArray(value)) {
         if (value.length < min || value.length > max) {
           return false;
         }
-      } else if (typeof value === 'number') {
+      } else if (typeof value === 'number' || typeof value === 'bigint') {
         if (value < min || value > max) {
-          return false;
-        }
-      } else if (typeof value === 'bigint') {
-        if (value < min || value > max) {
-          return false;
-        }
-      } else if (Array.isArray(value)) {
-        if (value.length < min || value.length > max) {
           return false;
         }
       }

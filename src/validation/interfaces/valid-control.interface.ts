@@ -52,6 +52,9 @@ export interface IValidControl {
   /** The validation model that the valid state is a part of. If the valid state is not a part of a validation model, returns undefined. */
   get parent(): ValidGroup | null | undefined;
 
+  /** The name given to the control by the parent. */
+  get name(): string | null | undefined;
+
   /** Validates the current valid state. */
   validate(inactiveGroups: string[]): ValidationResultModel[];
 
@@ -65,5 +68,5 @@ export interface IValidControl {
   markAsTouched(): void;
 
   /** Used internally to set the parent for the valid state. */
-  setParent(parent: ValidGroup): void;
+  setParent(parent: ValidGroup, name: string | null | undefined): void;
 }

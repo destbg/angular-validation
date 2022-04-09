@@ -16,9 +16,7 @@ export function containValidator(
         return true;
       }
 
-      if (typeof value === 'string') {
-        return value.includes(containValue);
-      } else if (Array.isArray(value)) {
+      if (typeof value === 'string' || Array.isArray(value)) {
         return value.includes(containValue);
       }
 

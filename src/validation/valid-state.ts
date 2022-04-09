@@ -11,6 +11,7 @@ export abstract class ValidState {
   protected _dirty: boolean;
   protected _touched: boolean;
   protected _parent: ValidGroup | null | undefined;
+  protected _name: string | null | undefined;
 
   constructor() {
     this._status = 'VALID';
@@ -87,6 +88,11 @@ export abstract class ValidState {
     return this._parent;
   }
 
+  /** The name given to the control by the parent. */
+  public get name(): string | null | undefined {
+    return this._name;
+  }
+
   /** Validates the current valid state. */
   public abstract validate(inactiveGroups: string[]): ValidationResultModel[];
 
@@ -129,8 +135,9 @@ export abstract class ValidState {
   }
 
   /** Used internally to set the parent for the valid state. */
-  public setParent(parent: ValidGroup): void {
+  public setParent(parent: ValidGroup, name: string | null | undefined): void {
     this._parent = parent;
+    this._name = name;
   }
 
   protected abstract onDisable(): void;

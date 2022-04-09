@@ -1,13 +1,15 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, Self, ViewChild } from '@angular/core';
-import { TLControl } from 'src/validation';
+import { AfterViewInit, Component, ElementRef, Input, Self, ViewChild } from '@angular/core';
+import { BaseControlValidationComponent, TLControl } from 'src/validation';
 import { ValidationState } from 'src/validation/helpers/validation-state';
-import { BaseControlValidationComponent } from 'src/validation/validation-component';
 
 @Component({
   selector: 'app-input-control',
   templateUrl: './input-control.component.html',
 })
 export class InputControlComponent extends BaseControlValidationComponent<string> implements AfterViewInit {
+  @Input()
+  public label: string | undefined;
+
   @ViewChild('input')
   public input?: ElementRef<HTMLInputElement>;
 
@@ -16,7 +18,7 @@ export class InputControlComponent extends BaseControlValidationComponent<string
   }
 
   public ngAfterViewInit(): void {
-    this.input!.nativeElement.addEventListener('keyup', () => {
+    this.input!.nativeElement.addEventListener('input', () => {
       this.changed.next(this.getValue());
     });
 
@@ -51,7 +53,5 @@ export class InputControlComponent extends BaseControlValidationComponent<string
     return 'VALID';
   }
 
-  public markAsTouched(): void {
-    // TODO:
-  }
+  public markAsTouched(): void {}
 }

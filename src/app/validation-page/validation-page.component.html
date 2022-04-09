@@ -1,10 +1,12 @@
 <app-validation-sub-class [validControl]="innerControl"> </app-validation-sub-class>
-<button (click)="onDisableInnerControl()">Disable inner control</button>
+<app-validation-sub-class [validControl]="innerControl2"> </app-validation-sub-class>
+<button (click)="onDisableInnerControl()">Disable first control</button>
+<button (click)="onMarkAsTouched()">Mark second control as touched</button>
 <div>{{ getChildValue() }}</div>
 <div>Value changed on: {{ timestamp | date: "h:m:s.SSS" }}</div>
 
 <div *ngIf="innerControl">
-  Control is: <b>{{ innerControl.status }}</b>
+  Control is: <strong>{{ innerControl.status }}</strong>
   <div>
     errors:
     <span *ngFor="let error of innerControl.errors">

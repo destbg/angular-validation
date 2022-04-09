@@ -8,6 +8,7 @@ import { ValidControlBuilder } from './valid-control-builder';
 import { ValidState } from './valid-state';
 import { ValueChangeModel } from './value-change.model';
 
+
 export class ValidControl<T> extends ValidState implements IValidControl {
   private readonly _valueChanges: Subject<T | null | undefined>;
 
@@ -99,15 +100,25 @@ export class ValidControl<T> extends ValidState implements IValidControl {
     this._dirty = true;
 
     if (options !== null && options !== undefined) {
-      if (options.emitEvent === null || options.emitEvent === undefined || options.emitEvent === true) {
+      if (options.emitEvent !== null || options.emitEvent !== undefined || options.emitEvent === false) {
         this._valueChanges.next(value);
       }
-    } else {
-      this._valueChanges.next(value);
     }
 
     if (this._parent !== null && this._parent !== undefined) {
       this._parent.endMassUpdate();
+    }
+  }
+
+  public addValidator(validator: ControlValidatorModel): void {
+    this.validators.push(validator);
+  }
+
+  public removeValidator(validatorIdentifier: string): void {
+    const index = this.validators.findIndex(f => f.identifier === validatorIdentifier);
+
+    if (index !== -1) {
+      this.validators.splice(index, 1);
     }
   }
 
@@ -125,13 +136,13 @@ export class ValidControl<T> extends ValidState implements IValidControl {
         const result: boolean = this.requiredFn(this);
 
         if (!result) {
-          const result: ValidationResultModel = {
+          const resultModel: ValidationResultModel = {
             identifier: 'required',
             severity: 'ERROR',
             format: (err) => err,
           };
-          results.push(result);
-          errorResults.push(result);
+          results.push(resultModel);
+          errorResults.push(resultModel);
         }
       }
     }
@@ -141,15 +152,15 @@ export class ValidControl<T> extends ValidState implements IValidControl {
         const result: boolean = validator.fn(this);
 
         if (!result) {
-          const result: ValidationResultModel = {
+          const resultModel: ValidationResultModel = {
             identifier: validator.identifier,
             severity: validator.severity,
             format: validator.format.bind(validator),
           };
-          results.push(result);
+          results.push(resultModel);
 
           if (validator.severity === 'ERROR') {
-            errorResults.push(result);
+            errorResults.push(resultModel);
           }
         }
       }
@@ -196,7 +207,11 @@ export class ValidControl<T> extends ValidState implements IValidControl {
 
   protected onDisable(): void {}
   protected onEnable(): void {}
-  protected onTouched(): void {}
+
+  protected onTouched(): void {
+    this._valueAccessor?.markAsTouched();
+    this.validate(this._parent?.inactiveGroups ?? []);
+  }
 
   private onValueAccessorValueChanged(value: T | null | undefined): void {
     this._value = value;
@@ -204,9 +219,7 @@ export class ValidControl<T> extends ValidState implements IValidControl {
 
     this._valueChanges.next(value);
 
-    if (this._parent !== null && this._parent !== undefined) {
-      this.validate(this._parent.inactiveGroups);
-    }
+    this.validate(this._parent?.inactiveGroups ?? []);
   }
 
   private onValueAccessorStatusChanged(status: ValidationState): void {

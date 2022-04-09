@@ -9,6 +9,7 @@ export class ValidGroup extends ValidState {
   private readonly subscriptions: [Subscription, Subscription][];
   private readonly _childValueChanged: Subject<void>;
   private _massUpdateCount: number = 0;
+  private _updateFiredDuringMassUpdate: boolean = false;
 
   constructor(validControls?: { [key: string]: IValidControl } | IValidControl[], groups?: { [key: string]: () => boolean }) {
     super();
@@ -43,8 +44,10 @@ export class ValidGroup extends ValidState {
       }),
     ]);
 
-    for (const validState of this.validControlsArray) {
-      validState.setParent(this);
+    const validControlsEntries = Object.entries(this.validControls);
+
+    for (const validControl of this.validControlsArray) {
+      validControl.setParent(this, validControlsEntries.find(f => f[1] === validControl)?.[0]);
     }
   }
 
@@ -81,7 +84,7 @@ export class ValidGroup extends ValidState {
       throw new Error(`The key ${key} is already added to the valid states collection.`);
     }
 
-    validControl.setParent(this);
+    validControl.setParent(this, key);
 
     this.validControls[key] = validControl;
     this.validControlsArray.push(validControl);
@@ -117,7 +120,7 @@ export class ValidGroup extends ValidState {
   }
 
   public addValidControlToArray(validControl: IValidControl): void {
-    validControl.setParent(this);
+    validControl.setParent(this, undefined);
 
     this.validControlsArray.push(validControl);
 
@@ -137,11 +140,37 @@ export class ValidGroup extends ValidState {
     const index = this.validControlsArray.indexOf(validControl);
 
     if (index !== -1) {
+      const validControlName = Object.entries(this.validControls)
+        .find(f => f[1] === validControl)?.[0];
+
+      if (validControlName !== null && validControlName !== undefined) {
+        delete this.validControls[validControlName];
+      }
+
       this.validControlsArray.splice(index, 1);
 
       this.subscriptions[index][0].unsubscribe();
       this.subscriptions[index][1].unsubscribe();
       this.subscriptions.splice(index, 1);
+    }
+  }
+
+  public clear(): void {
+    while (this.validControlsArray.length > 0) {
+      const validControl = this.validControlsArray[0];
+      
+      const validControlName = Object.entries(this.validControls)
+        .find(f => f[1] === validControl)?.[0];
+
+      if (validControlName !== null && validControlName !== undefined) {
+        delete this.validControls[validControlName];
+      }
+
+      this.validControlsArray.splice(0, 1);
+
+      this.subscriptions[0][0].unsubscribe();
+      this.subscriptions[0][1].unsubscribe();
+      this.subscriptions.splice(0, 1);
     }
   }
 
@@ -184,13 +213,14 @@ export class ValidGroup extends ValidState {
   endMassUpdate(): void {
     this._massUpdateCount--;
 
-    if (this._massUpdateCount === 0) {
+    if (this._massUpdateCount === 0 && this._updateFiredDuringMassUpdate === true) {
       this._childValueChanged.next();
     }
   }
 
   private validControlValueChanged(): void {
     if (this._massUpdateCount > 0) {
+      this._updateFiredDuringMassUpdate = true;
       return;
     }
 

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ValidControl, ValidGroup } from 'src/validation';
-import { BasePageValidationComponent } from 'src/validation/validation-component';
+import { BasePageValidationComponent, ValidControl, ValidGroup } from 'src/validation';
 import { TestModel } from '../test.model';
 
 @Component({
@@ -13,6 +12,7 @@ export class ValidationPageComponent extends BasePageValidationComponent impleme
   public timestamp: Date = new Date();
 
   public innerControl!: ValidControl<TestModel>;
+  public innerControl2!: ValidControl<TestModel>;
 
   constructor() {
     super();
@@ -39,14 +39,20 @@ export class ValidationPageComponent extends BasePageValidationComponent impleme
     this.validGroup.checkGroups();
   }
 
+  public onMarkAsTouched(): void {
+    this.innerControl2.markAsTouched();
+  }
+
   protected buildValidation(): ValidGroup {
     this.innerControl = new ValidControl({
       groups: ['DisableInnerControl'],
     });
+    this.innerControl2 = new ValidControl();
 
     const group = new ValidGroup(
       {
         innerControl: this.innerControl,
+        innerControl2: this.innerControl2,
       },
       {
         DisableInnerControl: () => this.disableInnerControl,

@@ -12,20 +12,12 @@ export function maxValidator(max: number, groups?: string[], severity?: string):
         return true;
       }
 
-      if (typeof value === 'string') {
+      if (typeof value === 'string' || Array.isArray(value)) {
         if (value.length > max) {
           return false;
         }
-      } else if (typeof value === 'number') {
+      } else if (typeof value === 'number' || typeof value === 'bigint') {
         if (value > max) {
-          return false;
-        }
-      } else if (typeof value === 'bigint') {
-        if (value > max) {
-          return false;
-        }
-      } else if (Array.isArray(value)) {
-        if (value.length > max) {
           return false;
         }
       }

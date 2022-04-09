@@ -22,6 +22,31 @@ import { rangeValidator } from './validators/range.validator';
 import { requiredValidator } from './validators/required.validator';
 
 export class Guard {
+  /* In order to remove a validator you need to know it's ID, this class can help with that process. */
+  public static Ids = {
+    contain: 'contain',
+    creditCard: 'creditCard',
+    email: 'email',
+    isEnum: 'isEnum',
+    equal: 'equal',
+    exactLength: 'exactLength',
+    fraction: 'fraction',
+    greaterThanOrEqual: 'greaterThanOrEqual',
+    greaterThan: 'greaterThan',
+    lessThanOrEqual: 'lessThanOrEqual',
+    lessThan: 'lessThan',
+    maxFraction: 'maxFraction',
+    max: 'max',
+    minFraction: 'minFraction',
+    min: 'min',
+    notContain: 'notContain',
+    notEmpty: 'notEmpty',
+    notEqual: 'notEqual',
+    pattern: 'pattern',
+    range: 'range',
+    required: 'required',
+  };
+
   public static contain(containValue: string | any, groups?: string[], severity?: string): ControlValidatorModel {
     return containValidator(containValue, groups, severity);
   }

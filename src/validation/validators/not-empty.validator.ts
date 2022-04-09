@@ -11,11 +11,7 @@ export function notEmptyValidator(groups?: string[], severity?: string): Control
         return true;
       }
 
-      if (typeof value === 'string') {
-        if (value.length === 0) {
-          return false;
-        }
-      } else if (Array.isArray(value)) {
+      if (typeof value === 'string' || Array.isArray(value)) {
         if (value.length === 0) {
           return false;
         }
