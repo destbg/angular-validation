@@ -27,10 +27,12 @@ export abstract class BaseReactiveFormsComponent<T> implements IControlValueAcce
 
   public readonly changed: Subject<T | null | undefined>;
   public readonly statusChanged: Subject<ValidationStatus>;
+  public readonly touched: Subject<void>;
 
   constructor(control: TLControl | null | undefined) {
     this.changed = new Subject<T | null | undefined>();
     this.statusChanged = new Subject<ValidationStatus>();
+    this.touched = new Subject<void>();
 
     if (control === null || control === undefined) {
       return;

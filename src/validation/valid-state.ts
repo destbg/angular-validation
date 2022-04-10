@@ -24,7 +24,6 @@ export abstract class ValidState {
     this.requiredGroups = [];
 
     this._statusChanges = new BehaviorSubject<ValidationStatus>(this._status);
-
     this.statusChanges = this._statusChanges.asObservable();
   }
 
@@ -119,9 +118,7 @@ export abstract class ValidState {
     this.onEnable();
 
     this._disabled = false;
-    if (this._parent !== null && this._parent !== undefined) {
-      this.validate(this._parent.inactiveGroups);
-    }
+    this.validate(this._parent?.inactiveGroups ?? []);
   }
 
   /** Tells the current valid state that the it was touched. */

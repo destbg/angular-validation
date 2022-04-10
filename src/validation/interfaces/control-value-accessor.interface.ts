@@ -4,6 +4,7 @@ import { ValidationStatus } from '../helpers/validation-status';
 export interface IControlValueAccessor<T> {
   readonly changed: Subject<T | null | undefined>;
   readonly statusChanged: Subject<ValidationStatus>;
+  readonly touched: Subject<void>;
 
   writeValue(value: T | null | undefined): void;
   getValue(): T | null | undefined;

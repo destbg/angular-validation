@@ -112,6 +112,10 @@ export class ValidControl<T> extends ValidState implements IValidControl {
 
   public addValidator(validator: ControlValidatorModel): void {
     this.validators.push(validator);
+
+    if (this._touched) {
+      this.validate(this._parent?.inactiveGroups ?? []);
+    }
   }
 
   public removeValidator(validatorIdentifier: string): void {
@@ -119,6 +123,10 @@ export class ValidControl<T> extends ValidState implements IValidControl {
 
     if (index !== -1) {
       this.validators.splice(index, 1);
+    }
+
+    if (this._touched) {
+      this.validate(this._parent?.inactiveGroups ?? []);
     }
   }
 
@@ -202,6 +210,10 @@ export class ValidControl<T> extends ValidState implements IValidControl {
       valueAccessor.statusChanged.subscribe({
         next: this.onValueAccessorStatusChanged.bind(this),
       });
+
+      valueAccessor.touched.subscribe({
+        next: this.onValueAccessorTouched.bind(this),
+      });
     }
   }
 
@@ -216,6 +228,7 @@ export class ValidControl<T> extends ValidState implements IValidControl {
   private onValueAccessorValueChanged(value: T | null | undefined): void {
     this._value = value;
     this._dirty = true;
+    this._touched = true;
 
     this._valueChanges.next(value);
 
@@ -227,5 +240,11 @@ export class ValidControl<T> extends ValidState implements IValidControl {
       this._status = status;
       this._statusChanges.next(status);
     }
+  }
+
+  private onValueAccessorTouched(): void {
+    this._touched = true;
+
+    this.validate(this._parent?.inactiveGroups ?? []);
   }
 }

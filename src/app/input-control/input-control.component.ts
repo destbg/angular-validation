@@ -22,6 +22,10 @@ export class InputControlComponent extends BaseControlComponent<string> implemen
       this.changed.next(this.getValue());
     });
 
+    this.input!.nativeElement.addEventListener('focusout', () => {
+      this.touched.next();
+    });
+
     if (this.validControl !== null && this.validControl !== undefined) {
       this.writeValue(this.validControl.value);
     }

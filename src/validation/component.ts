@@ -38,10 +38,12 @@ export abstract class BaseControlComponent<T> implements IControlValueAccessor<T
 
   public readonly changed: Subject<T | null | undefined>;
   public readonly statusChanged: Subject<ValidationStatus>;
+  public readonly touched: Subject<void>;
 
   constructor(control: TLControl | null | undefined) {
     this.changed = new Subject<T | null | undefined>();
     this.statusChanged = new Subject<ValidationStatus>();
+    this.touched = new Subject<void>();
 
     if (control === null || control === undefined) {
       return;
@@ -94,10 +96,12 @@ export abstract class BaseComponent<T> implements IControlValueAccessor<T> {
 
   public readonly changed: Subject<T | null | undefined>;
   public readonly statusChanged: Subject<ValidationStatus>;
+  public readonly touched: Subject<void>;
 
   constructor(control: TLControl | null | undefined) {
     this.changed = new Subject<T | null | undefined>();
     this.statusChanged = new Subject<ValidationStatus>();
+    this.touched = new Subject<void>();
 
     if (control === null || control === undefined) {
       return;
