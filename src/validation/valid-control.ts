@@ -2,7 +2,6 @@ import { Subject, Observable } from 'rxjs';
 import { ValidationStatus } from './helpers/validation-status';
 import { IControlValueAccessor } from './interfaces/control-value-accessor.interface';
 import { ValidationResultModel } from './models/validation-result.model';
-import { ControlValidatorModel } from './models/validator.model';
 import { ValidControlBuilder } from './models/valid-control-builder';
 import { SetValueModel } from './set-value.model';
 import { ValidType } from './helpers/valid-type';
@@ -20,12 +19,8 @@ export class ValidControl<T> extends AbstractValidControl {
         if (builder !== null && builder !== undefined) {
             this._value = builder.value;
 
-            if (builder.disabled !== null && builder.disabled !== undefined) {
-                this._disabled = builder.disabled;
-
-                if (this._disabled === true) {
-                    this._status = 'DISABLED';
-                }
+            if (builder.disabled === true) {
+                this._status = 'DISABLED';
             }
 
             if (builder.groups !== null && builder.groups !== undefined) {
@@ -145,7 +140,7 @@ export class ValidControl<T> extends AbstractValidControl {
         if (this._valueAccessor !== null && this._valueAccessor !== undefined) {
             const valueAccessorState = this._valueAccessor.validate();
 
-            if (valueAccessorState !== 'VALID') {
+            if (valueAccessorState === 'INVALID') {
                 status = valueAccessorState;
             } else {
                 status = errorResults.length === 0 ? 'VALID' : 'INVALID';
@@ -187,9 +182,7 @@ export class ValidControl<T> extends AbstractValidControl {
         return 'CONTROL';
     }
 
-    protected onDisable(): void {
-        this.errors = [];
-    }
+    protected onDisable(): void { }
 
     protected onEnable(): void { }
 

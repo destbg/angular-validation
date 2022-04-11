@@ -42,14 +42,17 @@ export class ValidationPageComponent extends BasePageComponent implements OnInit
     }
 
     protected buildValidation(): ValidGroup {
-        this.innerControl = new ValidControl({
-            groups: ['DisableInnerControl'],
-        });
+        this.innerControl = new ValidControl();
         this.innerControl2 = new ValidControl();
 
         const group = new ValidGroup({
             validStates: {
-                innerControl: this.innerControl,
+                innerControl: new ValidGroup({
+                    validStates: {
+                        innerControl: this.innerControl
+                    },
+                    groups: ['DisableInnerControl']
+                }),
                 innerControl2: this.innerControl2,
             },
             groupFns: {

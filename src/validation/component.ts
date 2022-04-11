@@ -88,7 +88,8 @@ export abstract class BaseControlComponent<T> implements IControlValueAccessor<T
 }
 
 export abstract class BaseComponent<T> implements IControlValueAccessor<T> {
-  private _validControl: ValidControl<T> | null | undefined;
+  public boundValidControl: ValidControl<T> | null | undefined;
+  public tlControl: TLControl | null | undefined;
 
   public validGroup!: ValidGroup;
 
@@ -99,6 +100,7 @@ export abstract class BaseComponent<T> implements IControlValueAccessor<T> {
   public readonly touched: Subject<void>;
 
   constructor(control: TLControl | null | undefined) {
+    this.tlControl = control;
     this.changed = new Subject<T | null | undefined>();
     this.statusChanged = new Subject<ValidationStatus>();
     this.touched = new Subject<void>();
@@ -147,16 +149,16 @@ export abstract class BaseComponent<T> implements IControlValueAccessor<T> {
   }
 
   private controlChanged(validControl: AbstractValidControl | null | undefined): void {
-    if (this._validControl !== null && this._validControl !== undefined) {
-      this._validControl.setValueAccessor(undefined);
+    if (this.boundValidControl !== null && this.boundValidControl !== undefined) {
+      this.boundValidControl.setValueAccessor(undefined);
     }
 
-    this._validControl = validControl as ValidControl<T>;
+    this.boundValidControl = validControl as ValidControl<T>;
 
-    if (this._validControl !== null && this._validControl !== undefined) {
-      this._validControl.setValueAccessor(this);
+    if (this.boundValidControl !== null && this.boundValidControl !== undefined) {
+      this.boundValidControl.setValueAccessor(this);
 
-      this._validControl.statusChanges.subscribe({
+      this.boundValidControl.statusChanges.subscribe({
         next: this.onValidControlStatusChanged.bind(this),
       });
     }

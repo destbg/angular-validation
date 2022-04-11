@@ -8,7 +8,6 @@ export abstract class ValidState {
     protected readonly _statusChanges: Subject<ValidationStatus>;
 
     protected _status: ValidationStatus;
-    protected _disabled: boolean;
     protected _dirty: boolean;
     protected _touched: boolean;
     protected _parent: ValidGroup | null | undefined;
@@ -16,7 +15,6 @@ export abstract class ValidState {
 
     constructor() {
         this._status = 'VALID';
-        this._disabled = false;
         this._dirty = false;
         this._touched = false;
         this.errors = [];
@@ -60,12 +58,12 @@ export abstract class ValidState {
 
     /** Returns whether the valid state is disabled, meaning that the valid state is disabled in the UI and is exempt from validation checks and excluded from aggregate values of ancestor valid states. */
     public get disabled(): boolean {
-        return this._disabled === true;
+        return this._status === 'DISABLED';
     }
 
     /** Returns whether the valid state is enabled, meaning that the valid state is included in ancestor calculations of validity or value. */
     public get enabled(): boolean {
-        return this._disabled === false;
+        return !this.disabled;
     }
 
     /** Returns whether the valid state is dirty, meaning that the user has changed the value in the UI. */
@@ -98,26 +96,26 @@ export abstract class ValidState {
 
     /** Disables the current valid state. Does nothing if already disabled. */
     public disable(): void {
-        if (this._disabled) {
+        if (this.disabled) {
             return;
         }
 
         this.onDisable();
 
-        this._disabled = true;
         this._status = 'DISABLED';
+        this.errors = [];
         this._statusChanges.next(this._status);
     }
 
     /** Enables the current valid state. Does nothing if already enabled. */
     public enable(): void {
-        if (!this._disabled) {
+        if (this.enabled) {
             return;
         }
 
         this.onEnable();
 
-        this._disabled = false;
+        this._status = 'PENDING';
         this.validate(this._parent?.inactiveGroups ?? []);
     }
 

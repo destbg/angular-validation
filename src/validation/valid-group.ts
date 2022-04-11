@@ -39,19 +39,19 @@ export class ValidGroup extends ValidState {
         }
 
         if (builder.validStates === null || builder.validStates === undefined) {
-            this.validControls = {};
-            this.validControlsArray = [];
+            this.validStates = {};
+            this.validStatesArray = [];
         } else if (Array.isArray(builder.validStates)) {
-            this.validControls = {};
-            this.validControlsArray = builder.validStates;
+            this.validStates = {};
+            this.validStatesArray = builder.validStates;
         } else {
-            this.validControls = builder.validStates;
-            this.validControlsArray = Object.values(this.validControls);
+            this.validStates = builder.validStates;
+            this.validStatesArray = Object.values(this.validStates);
         }
 
         this.subscriptions = [];
 
-        for (const validControl of this.validControlsArray) {
+        for (const validControl of this.validStatesArray) {
             let sub: Subscription;
             if (validControl.validType() === 'GROUP') {
                 sub = (validControl as ValidGroup).childValueChanges.subscribe({
@@ -72,9 +72,9 @@ export class ValidGroup extends ValidState {
             ]);
         }
 
-        const validControlsEntries = Object.entries(this.validControls);
+        const validControlsEntries = Object.entries(this.validStates);
 
-        for (const validControl of this.validControlsArray) {
+        for (const validControl of this.validStatesArray) {
             validControl.setParent(this, validControlsEntries.find(f => f[1] === validControl)?.[0]);
         }
 
@@ -84,8 +84,8 @@ export class ValidGroup extends ValidState {
         }
     }
 
-    public readonly validControls: { [key: string]: ValidState };
-    public readonly validControlsArray: ValidState[];
+    public readonly validStates: { [key: string]: ValidState };
+    public readonly validStatesArray: ValidState[];
     public readonly groupsFns: { [key: string]: () => boolean };
 
     public readonly childValueChanges: Observable<void>;
@@ -101,7 +101,7 @@ export class ValidGroup extends ValidState {
             .filter((f) => f[1]())
             .map((f) => f[0]);
 
-        for (const validState of this.validControlsArray) {
+        for (const validState of this.validStatesArray) {
             if (validState.groups.filter((f) => this.inactiveGroups.includes(f)).length === 0) {
                 validState.enable();
             } else {
@@ -110,8 +110,8 @@ export class ValidGroup extends ValidState {
         }
     }
 
-    public addValidControl(key: string, validControl: ValidState): void {
-        const previousValidState = this.validControls[key];
+    public addValidState(key: string, validControl: ValidState): void {
+        const previousValidState = this.validStates[key];
 
         if (previousValidState !== null && previousValidState !== undefined) {
             throw new Error(`The key ${key} is already added to the valid states collection.`);
@@ -119,8 +119,8 @@ export class ValidGroup extends ValidState {
 
         validControl.setParent(this, key);
 
-        this.validControls[key] = validControl;
-        this.validControlsArray.push(validControl);
+        this.validStates[key] = validControl;
+        this.validStatesArray.push(validControl);
 
         let sub: Subscription;
         if (validControl.validType() === 'GROUP') {
@@ -144,28 +144,28 @@ export class ValidGroup extends ValidState {
         this.checkGroups();
     }
 
-    public removeValidControl(key: string): void {
-        const validState = this.validControls[key];
+    public removeValidState(key: string): void {
+        const validState = this.validStates[key];
 
         if (validState !== null && validState !== undefined) {
-            const index = this.validControlsArray.indexOf(validState);
+            const index = this.validStatesArray.indexOf(validState);
 
             if (index !== -1) {
-                this.validControlsArray.splice(index, 1);
+                this.validStatesArray.splice(index, 1);
 
                 this.subscriptions[index][0].unsubscribe();
                 this.subscriptions[index][1].unsubscribe();
                 this.subscriptions.splice(index, 1);
             }
 
-            delete this.validControls[key];
+            delete this.validStates[key];
         }
     }
 
-    public addValidControlToArray(validControl: ValidState): void {
+    public addValidStateToArray(validControl: ValidState): void {
         validControl.setParent(this, undefined);
 
-        this.validControlsArray.push(validControl);
+        this.validStatesArray.push(validControl);
 
         let sub: Subscription;
         if (validControl.validType() === 'GROUP') {
@@ -189,18 +189,18 @@ export class ValidGroup extends ValidState {
         this.checkGroups();
     }
 
-    public removeValidControlFromArray(validControl: ValidState): void {
-        const index = this.validControlsArray.indexOf(validControl);
+    public removeValidStateFromArray(validControl: ValidState): void {
+        const index = this.validStatesArray.indexOf(validControl);
 
         if (index !== -1) {
-            const validControlName = Object.entries(this.validControls)
+            const validControlName = Object.entries(this.validStates)
                 .find(f => f[1] === validControl)?.[0];
 
             if (validControlName !== null && validControlName !== undefined) {
-                delete this.validControls[validControlName];
+                delete this.validStates[validControlName];
             }
 
-            this.validControlsArray.splice(index, 1);
+            this.validStatesArray.splice(index, 1);
 
             this.subscriptions[index][0].unsubscribe();
             this.subscriptions[index][1].unsubscribe();
@@ -209,17 +209,17 @@ export class ValidGroup extends ValidState {
     }
 
     public clear(): void {
-        while (this.validControlsArray.length > 0) {
-            const validControl = this.validControlsArray[0];
+        while (this.validStatesArray.length > 0) {
+            const validControl = this.validStatesArray[0];
 
-            const validControlName = Object.entries(this.validControls)
+            const validControlName = Object.entries(this.validStates)
                 .find(f => f[1] === validControl)?.[0];
 
             if (validControlName !== null && validControlName !== undefined) {
-                delete this.validControls[validControlName];
+                delete this.validStates[validControlName];
             }
 
-            this.validControlsArray.splice(0, 1);
+            this.validStatesArray.splice(0, 1);
 
             this.subscriptions[0][0].unsubscribe();
             this.subscriptions[0][1].unsubscribe();
@@ -252,8 +252,8 @@ export class ValidGroup extends ValidState {
             return [];
         }
 
-        for (const validControl of this.validControlsArray) {
-            validControl.validate(inactiveGroups);
+        for (const validState of this.validStatesArray) {
+            validState.validate(this.inactiveGroups);
         }
 
         const results: ValidationResultModel[] = [];
@@ -278,7 +278,7 @@ export class ValidGroup extends ValidState {
             }
         }
 
-        let status: ValidationStatus = (errorResults.length === 0 && this.validControlsArray.every(f => f.status !== 'INVALID'))
+        let status: ValidationStatus = (errorResults.length === 0 && this.validStatesArray.every(f => f.status === 'VALID' || f.status === 'DISABLED'))
             ? 'VALID'
             : 'INVALID';
 
@@ -296,19 +296,19 @@ export class ValidGroup extends ValidState {
     }
 
     protected onDisable(): void {
-        for (const validState of this.validControlsArray) {
+        for (const validState of this.validStatesArray) {
             validState.disable();
         }
     }
 
     protected onEnable(): void {
-        for (const validState of this.validControlsArray) {
+        for (const validState of this.validStatesArray) {
             validState.enable();
         }
     }
 
     protected onTouched(): void {
-        for (const validState of this.validControlsArray) {
+        for (const validState of this.validStatesArray) {
             validState.markAsTouched();
         }
     }
@@ -335,6 +335,7 @@ export class ValidGroup extends ValidState {
 
         this.checkGroups();
         this._childValueChanged.next();
+        this.validate(this.inactiveGroups);
     }
 
     private validControlStatusChanged(): void {
@@ -344,7 +345,7 @@ export class ValidGroup extends ValidState {
 
         let status: ValidationStatus = 'VALID';
 
-        for (const validControl of this.validControlsArray) {
+        for (const validControl of this.validStatesArray) {
             if (validControl.status === 'INVALID') {
                 status = 'INVALID';
                 break;

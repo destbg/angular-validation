@@ -20,7 +20,7 @@ import { notEqualValidator } from './validators/not-equal.validator';
 import { patternValidator } from './validators/pattern.validator';
 import { rangeValidator } from './validators/range.validator';
 
-export class Guard {
+export class Auth {
     /* In order to remove a validator you need to know it's ID, this class can help with that process. */
     public static Ids = {
         contain: 'contain',

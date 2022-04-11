@@ -1,5 +1,5 @@
 import { Component, OnInit, Self } from '@angular/core';
-import { BaseComponent, Guard, TLControl, ValidControl, ValidGroup } from 'src/validation';
+import { BaseComponent, Auth, TLControl, ValidControl, ValidGroup } from 'src/validation';
 import { Loader } from '../loader';
 import { TestModel } from '../test.model';
 
@@ -56,24 +56,21 @@ export class ValidationSubClassComponent extends BaseComponent<TestModel> implem
 
     protected buildValidation(): ValidGroup {
         this.textControl = new ValidControl({
-            value: '',
             groups: ['DisableText'],
             required: true,
-            validators: [Guard.notEqual(['testt', 'testtttttttt']), Guard.max(10)],
+            validators: [Auth.notEqual(['testt', 'testtttttttt']), Auth.max(10)],
         });
 
         this.text2Control = new ValidControl({
-            value: '',
             groups: ['DisableText'],
             required: true,
-            validators: [Guard.notEqual(['testt', 'testtttttttt']), Guard.max(10)],
+            validators: [Auth.notEqual(['testt', 'testtttttttt']), Auth.max(10)],
         });
 
         this.text3Control = new ValidControl({
-            value: '',
             groups: ['DisableHiddenText'],
             required: true,
-            validators: [Guard.notEqual(['testt', 'testtttttttt']), Guard.max(10)],
+            validators: [Auth.notEqual(['testt', 'testtttttttt']), Auth.max(10)],
         });
 
         this.textControl.valueChanges.subscribe({
@@ -96,7 +93,7 @@ export class ValidationSubClassComponent extends BaseComponent<TestModel> implem
             },
             groupFns: {
                 DisableText: () => this.disableText,
-                DisableHiddenText: () => !this.hideInputControl,
+                DisableHiddenText: () => this.hideInputControl,
             }
         });
 

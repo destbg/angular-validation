@@ -23,7 +23,7 @@ export function lessThanValidator(
             let otherValue: any;
 
             if (validControl.parent instanceof ValidGroup) {
-                otherValue = (validControl.parent.validControls[otherValidControlName] as AbstractValidControl)?.anyValue;
+                otherValue = (validControl.parent.validStates[otherValidControlName] as AbstractValidControl)?.anyValue;
             }
 
             if (otherValue === undefined || otherValue === null) {

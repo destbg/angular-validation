@@ -1,7 +1,7 @@
 import { ValidGroup } from './valid-group';
 import { ValidControl } from './valid-control';
 import { ValidState } from './valid-state';
-import { Guard } from './guard';
+import { Auth } from './auth';
 import { TLControl } from './tl-control';
 import { BaseControlComponent, BasePageComponent, BaseComponent } from './component';
 import { SetValueModel } from './set-value.model';
@@ -13,7 +13,7 @@ export {
     ValidControl,
     ValidState,
     AbstractValidControl,
-    Guard,
+    Auth,
     TLControl,
     BasePageComponent,
     BaseControlComponent,
