@@ -19,6 +19,10 @@ export class ValidControl<T> extends ValidState implements IValidControl {
     super();
 
     this.validators = [];
+    this.errors = [];
+    this.groups = [];
+    this.required = false;
+    this.requiredGroups = [];
 
     if (builder !== null && builder !== undefined) {
       this._value = builder.value;
@@ -62,6 +66,15 @@ export class ValidControl<T> extends ValidState implements IValidControl {
   /** The function used to validate when the valid state is required. */
   public requiredFn: (validState: ValidControl<T>) => boolean;
 
+  /** Returns whether the valid state is required. */
+  public required: boolean;
+
+  /** The groups that must be applied in order for the validation function to trigger. */
+  public readonly requiredGroups: string[];
+
+  /** The groups that must be applied in order for the valid state to be enabled. */
+  public groups: string[];
+
   /** The valid state's validators. */
   public readonly validators: ControlValidatorModel[];
 
@@ -70,6 +83,9 @@ export class ValidControl<T> extends ValidState implements IValidControl {
 
   /** A multicasting observable of value changes for the valid state that emits every time the value of the valid state changes in the UI, but not programmatically. */
   public readonly anyValueChanges: Observable<any | null | undefined>;
+
+  /** The valid state's validation errors. */
+  public errors: ValidationResultModel[];
 
   /** The control that the current ValidControl is bound to. */
   public get valueAccessor(): IControlValueAccessor<T> | null | undefined {
@@ -217,7 +233,10 @@ export class ValidControl<T> extends ValidState implements IValidControl {
     }
   }
 
-  protected onDisable(): void { }
+  protected onDisable(): void {
+    this.errors = [];
+  }
+
   protected onEnable(): void { }
 
   protected onTouched(): void {

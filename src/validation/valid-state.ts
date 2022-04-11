@@ -18,26 +18,10 @@ export abstract class ValidState {
     this._disabled = false;
     this._dirty = false;
     this._touched = false;
-    this.groups = [];
-    this.required = false;
-    this.errors = [];
-    this.requiredGroups = [];
 
     this._statusChanges = new Subject<ValidationStatus>();
     this.statusChanges = this._statusChanges.asObservable();
   }
-
-  /** Returns whether the valid state is required. */
-  public required: boolean;
-
-  /** The groups that must be applied in order for the validation function to trigger. */
-  public readonly requiredGroups: string[];
-
-  /** The valid state's validation errors. */
-  public errors: ValidationResultModel[];
-
-  /** The groups that must be applied in order for the valid state to be enabled. */
-  public groups: string[];
 
   /** A multicasting observable that emits a validation status whenever it is calculated for the valid state. */
   public readonly statusChanges: Observable<ValidationStatus>;
@@ -105,7 +89,6 @@ export abstract class ValidState {
 
     this._disabled = true;
     this._status = 'DISABLED';
-    this.errors = [];
     this._statusChanges.next(this._status);
   }
 

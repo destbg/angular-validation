@@ -3,26 +3,25 @@
     I am currently: <strong>{{ isDisabled ? "disabled" : "enabled" }}</strong>
   </div>
   <div>
-    Values inside the control: <strong>{{ textControl.value }}</strong
-    >, <strong>{{ text2Control.value }}</strong
-    >, <strong>{{ text3Control.value }}</strong>
+    Values inside the control: <strong>{{ textControl.value }}</strong>, <strong>{{ text2Control.value }}</strong>, <strong>{{
+      text3Control.value }}</strong>
   </div>
-  <app-input-control *ngIf="hideInputControl" [validControl]="textControl" label="text"></app-input-control>
-  <app-input-control *ngIf="hideInputControl" [validControl]="text2Control" label="text2"></app-input-control>
-  <app-input-control *ngIf="!hideInputControl" [validControl]="text3Control" label="text3"></app-input-control>
+  <app-input-control *ngIf="hideInputControl"
+                     [validControl]="textControl"
+                     label="text"></app-input-control>
+  <app-input-control *ngIf="hideInputControl"
+                     [validControl]="text2Control"
+                     label="text2"></app-input-control>
+  <app-input-control *ngIf="!hideInputControl"
+                     [validControl]="text3Control"
+                     label="text3"></app-input-control>
   <div>Value changed on: {{ timestamp | date: "h:m:s.SSS" }}</div>
   <div>Group child changed on: {{ groupTimestamp | date: "h:m:s.SSS" }}</div>
-  <button (click)="onDisableText()" [disabled]="isDisabled">Disable input</button>
-  <button (click)="onHideInputControl()" [disabled]="isDisabled">Hide input control</button>
+  <button (click)="onDisableText()"
+          [disabled]="isDisabled">Disable input</button>
+  <button (click)="onHideInputControl()"
+          [disabled]="isDisabled">Hide input control</button>
   <div *ngIf="validGroup">
     Control is: <strong>{{ validGroup.status }}</strong>
-    <div>
-      errors:
-      <span *ngFor="let error of validGroup.errors">
-        <span>{{ error.identifier }}</span>
-        <span> - </span>
-        <span>{{ error.format("{0} and {1} and {2} at most.") }}</span>
-      </span>
-    </div>
   </div>
 </div>

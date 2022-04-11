@@ -3,7 +3,9 @@
     I am currently: <strong>{{ isDisabled ? "disabled" : "enabled" }}</strong>
   </div>
   <label for="input">{{ label }}</label>
-  <input #input id="input" [disabled]="isDisabled" />
+  <input #input
+         id="input"
+         [disabled]="isDisabled" />
   <div *ngIf="validControl">
     Control is: <strong>{{ validControl.status }}</strong>
     <div>

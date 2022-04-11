@@ -7,12 +7,4 @@
 
 <div *ngIf="validGroup">
   Control is: <strong>{{ validGroup.status }}</strong>
-  <div>
-    errors:
-    <span *ngFor="let error of validGroup.errors">
-      <span>{{ error.identifier }}</span>
-      <span> - </span>
-      <span>{{ error.format("{0} and {1} and {2} at most.") }}</span>
-    </span>
-  </div>
 </div>
