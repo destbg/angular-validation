@@ -1,10 +1,10 @@
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { ValidationStatus } from './helpers/validation-status';
 import { ValidationResultModel } from './models/validation-result.model';
 import { ValidGroup } from './valid-group';
 
 export abstract class ValidState {
-  protected readonly _statusChanges: BehaviorSubject<ValidationStatus>;
+  protected readonly _statusChanges: Subject<ValidationStatus>;
 
   protected _status: ValidationStatus;
   protected _disabled: boolean;
@@ -23,7 +23,7 @@ export abstract class ValidState {
     this.errors = [];
     this.requiredGroups = [];
 
-    this._statusChanges = new BehaviorSubject<ValidationStatus>(this._status);
+    this._statusChanges = new Subject<ValidationStatus>();
     this.statusChanges = this._statusChanges.asObservable();
   }
 
@@ -142,18 +142,4 @@ export abstract class ValidState {
   protected abstract onEnable(): void;
 
   protected abstract onTouched(): void;
-
-  protected setStatus(value: ValidationStatus, options?: { emitEvent: boolean | undefined }) {
-    if (value !== this._status) {
-      this._status = value;
-
-      if (options !== null && options !== undefined) {
-        if (options.emitEvent === null || options.emitEvent === undefined || options.emitEvent === true) {
-          this._statusChanges.next(value);
-        }
-      } else {
-        this._statusChanges.next(value);
-      }
-    }
-  }
 }

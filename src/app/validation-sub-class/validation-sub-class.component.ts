@@ -37,6 +37,7 @@ export class ValidationSubClassComponent extends BaseComponent<TestModel> implem
 
   public onHideInputControl(): void {
     this.hideInputControl = !this.hideInputControl;
+    this.validGroup.checkGroups();
   }
 
   public writeValue(value: TestModel | null | undefined): void {

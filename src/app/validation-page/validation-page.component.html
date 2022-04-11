@@ -5,11 +5,11 @@
 <div>{{ getChildValue() }}</div>
 <div>Value changed on: {{ timestamp | date: "h:m:s.SSS" }}</div>
 
-<div *ngIf="innerControl">
-  Control is: <strong>{{ innerControl.status }}</strong>
+<div *ngIf="validGroup">
+  Control is: <strong>{{ validGroup.status }}</strong>
   <div>
     errors:
-    <span *ngFor="let error of innerControl.errors">
+    <span *ngFor="let error of validGroup.errors">
       <span>{{ error.identifier }}</span>
       <span> - </span>
       <span>{{ error.format("{0} and {1} and {2} at most.") }}</span>

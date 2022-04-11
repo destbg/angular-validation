@@ -229,14 +229,22 @@ export class ValidGroup extends ValidState {
   }
 
   private validControlStatusChanged(): void {
+    if (this._status === 'INVALID' || this._status === 'DISABLED') {
+      return;
+    }
+
     let status: ValidationStatus = 'VALID';
 
     for (const validControl of this.validControlsArray) {
       if (validControl.status === 'INVALID') {
         status = 'INVALID';
+        break;
       }
     }
 
-    this.setStatus(status);
+    if (this._status !== status) {
+      this._status = status;
+      this._statusChanges.next(status);
+    }
   }
 }

@@ -179,7 +179,7 @@ export class ValidControl<T> extends ValidState implements IValidControl {
     if (this._valueAccessor !== null && this._valueAccessor !== undefined) {
       const valueAccessorState = this._valueAccessor.validate();
 
-      if (valueAccessorState === 'INVALID') {
+      if (valueAccessorState !== 'VALID') {
         status = valueAccessorState;
       } else {
         status = errorResults.length === 0 ? 'VALID' : 'INVALID';
