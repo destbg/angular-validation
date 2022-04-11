@@ -1,4 +1,4 @@
-import { ControlValidatorModel } from './models/validator.model';
+import { ControlValidator } from './models/control-validator';
 import { containValidator } from './validators/contain.validator';
 import { creditCardValidator } from './validators/credit-card.validator';
 import { emailValidator } from './validators/email.validator';
@@ -45,83 +45,83 @@ export class Auth {
         range: 'range',
     };
 
-    public static contain(containValue: string | any, groups?: string[], severity?: string): ControlValidatorModel {
+    public static contain(containValue: string | any, groups?: string[], severity?: string): ControlValidator {
         return containValidator(containValue, groups, severity);
     }
 
-    public static creditCard(groups?: string[], severity?: string): ControlValidatorModel {
+    public static creditCard(groups?: string[], severity?: string): ControlValidator {
         return creditCardValidator(groups, severity);
     }
 
-    public static email(groups?: string[], severity?: string): ControlValidatorModel {
+    public static email(groups?: string[], severity?: string): ControlValidator {
         return emailValidator(groups, severity);
     }
 
-    public static isEnum(enumValues: string[], groups?: string[], severity?: string): ControlValidatorModel {
+    public static isEnum(enumValues: string[], groups?: string[], severity?: string): ControlValidator {
         return isEnumValidator(enumValues, groups, severity);
     }
 
-    public static equal(expectedValues: any[], groups?: string[], severity?: string): ControlValidatorModel {
+    public static equal(expectedValues: any[], groups?: string[], severity?: string): ControlValidator {
         return equalValidator(expectedValues, groups, severity);
     }
 
-    public static exactLength(length: number, groups?: string[], severity?: string): ControlValidatorModel {
+    public static exactLength(length: number, groups?: string[], severity?: string): ControlValidator {
         return exactLengthValidator(length, groups, severity);
     }
 
-    public static fraction(digits: number, groups?: string[], severity?: string): ControlValidatorModel {
+    public static fraction(digits: number, groups?: string[], severity?: string): ControlValidator {
         return fractionValidator(digits, groups, severity);
     }
 
-    public static greaterThanOrEqual(otherValidControlName: string, groups?: string[], severity?: string): ControlValidatorModel {
+    public static greaterThanOrEqual(otherValidControlName: string, groups?: string[], severity?: string): ControlValidator {
         return greaterThanOrEqualValidator(otherValidControlName, groups, severity);
     }
 
-    public static greaterThan(otherValidControlName: string, groups?: string[], severity?: string): ControlValidatorModel {
+    public static greaterThan(otherValidControlName: string, groups?: string[], severity?: string): ControlValidator {
         return greaterThanValidator(otherValidControlName, groups, severity);
     }
 
-    public static lessThanOrEqual(otherValidControlName: string, groups?: string[], severity?: string): ControlValidatorModel {
+    public static lessThanOrEqual(otherValidControlName: string, groups?: string[], severity?: string): ControlValidator {
         return lessThanOrEqualValidator(otherValidControlName, groups, severity);
     }
 
-    public static lessThan(otherValidControlName: string, groups?: string[], severity?: string): ControlValidatorModel {
+    public static lessThan(otherValidControlName: string, groups?: string[], severity?: string): ControlValidator {
         return lessThanValidator(otherValidControlName, groups, severity);
     }
 
-    public static maxFraction(maxDigits: number, groups?: string[], severity?: string): ControlValidatorModel {
+    public static maxFraction(maxDigits: number, groups?: string[], severity?: string): ControlValidator {
         return maxFractionValidator(maxDigits, groups, severity);
     }
 
-    public static max(max: number, groups?: string[], severity?: string): ControlValidatorModel {
+    public static max(max: number, groups?: string[], severity?: string): ControlValidator {
         return maxValidator(max, groups, severity);
     }
 
-    public static minFraction(minDigits: number, groups?: string[], severity?: string): ControlValidatorModel {
+    public static minFraction(minDigits: number, groups?: string[], severity?: string): ControlValidator {
         return minFractionValidator(minDigits, groups, severity);
     }
 
-    public static min(min: number, groups?: string[], severity?: string): ControlValidatorModel {
+    public static min(min: number, groups?: string[], severity?: string): ControlValidator {
         return minValidator(min, groups, severity);
     }
 
-    public static notContain(containValue: string, groups?: string[], severity?: string): ControlValidatorModel {
+    public static notContain(containValue: string, groups?: string[], severity?: string): ControlValidator {
         return notContainValidator(containValue, groups, severity);
     }
 
-    public static notEmpty(groups?: string[], severity?: string): ControlValidatorModel {
+    public static notEmpty(groups?: string[], severity?: string): ControlValidator {
         return notEmptyValidator(groups, severity);
     }
 
-    public static notEqual(expectedValues: any[], groups?: string[], severity?: string): ControlValidatorModel {
+    public static notEqual(expectedValues: any[], groups?: string[], severity?: string): ControlValidator {
         return notEqualValidator(expectedValues, groups, severity);
     }
 
-    public static pattern(pattern: string | RegExp, groups?: string[], severity?: string): ControlValidatorModel {
+    public static pattern(pattern: string | RegExp, groups?: string[], severity?: string): ControlValidator {
         return patternValidator(pattern, groups, severity);
     }
 
-    public static range(min: number, max: number, groups?: string[], severity?: string): ControlValidatorModel {
+    public static range(min: number, max: number, groups?: string[], severity?: string): ControlValidator {
         return rangeValidator(min, max, groups, severity);
     }
 }

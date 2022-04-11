@@ -1,30 +1,30 @@
-import { AbstractValidControl } from '../abstract-valid-control';
-import { ControlValidatorModel } from '../models/validator.model';
+import { Auth } from '../auth';
+import { ControlValidator } from '../models/control-validator';
 
 const EMAIL_REGEXP =
     /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
-export function emailValidator(groups?: string[], severity?: string): ControlValidatorModel {
-    return {
-        fn: (validControl: AbstractValidControl) => {
-            const value = validControl.anyValue;
+export function emailValidator(groups?: string[], severity?: string): ControlValidator {
+    const validator = new ControlValidator({
+        identifier: Auth.Ids.email,
+        groups: groups,
+        severity: severity,
+    });
 
-            // When the value is undefined or null, it should only be validated by the required validator.
-            if (value === undefined || value === null) {
-                return true;
-            }
+    validator.fn = () => {
+        const value = validator.control.anyValue;
 
-            if (typeof value === 'string') {
-                return EMAIL_REGEXP.test(value);
-            }
-
+        // When the value is undefined or null, it should only be validated by the required validator.
+        if (value === undefined || value === null) {
             return true;
-        },
-        format: (error: string) => {
-            return error;
-        },
-        identifier: 'email',
-        groups: groups ?? [],
-        severity: severity ?? 'ERROR',
+        }
+
+        if (typeof value === 'string') {
+            return EMAIL_REGEXP.test(value);
+        }
+
+        return true;
     };
+
+    return validator;
 }

@@ -1,5 +1,5 @@
-import { AbstractValidControl } from '../abstract-valid-control';
-import { ControlValidatorModel } from '../models/validator.model';
+import { Auth } from '../auth';
+import { ControlValidator } from '../models/control-validator';
 import { format } from '../utils/format.util';
 
 // enum Test {
@@ -8,27 +8,31 @@ import { format } from '../utils/format.util';
 // }
 // isEnum(Object.keys(Test));
 
-export function isEnumValidator(enumValues: string[], groups?: string[], severity?: string): ControlValidatorModel {
-    return {
-        fn: (validControl: AbstractValidControl) => {
-            const value = validControl.anyValue;
+export function isEnumValidator(enumValues: string[], groups?: string[], severity?: string): ControlValidator {
+    const validator = new ControlValidator({
+        identifier: Auth.Ids.isEnum,
+        groups: groups,
+        severity: severity,
+    });
 
-            // When the value is undefined or null, it should only be validated by the required validator.
-            if (value === undefined || value === null) {
-                return true;
-            }
+    validator.fn = () => {
+        const value = validator.control.anyValue;
 
-            if (typeof value === 'string') {
-                return enumValues.includes(value);
-            }
-
+        // When the value is undefined or null, it should only be validated by the required validator.
+        if (value === undefined || value === null) {
             return true;
-        },
-        format: (error: string) => {
-            return format(error, [enumValues]);
-        },
-        identifier: 'isEnum',
-        groups: groups ?? [],
-        severity: severity ?? 'ERROR',
+        }
+
+        if (typeof value === 'string') {
+            return enumValues.includes(value);
+        }
+
+        return true;
     };
+
+    validator.format = (error: string) => {
+        return format(error, [enumValues]);
+    };
+
+    return validator;
 }

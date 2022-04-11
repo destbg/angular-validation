@@ -1,29 +1,29 @@
-import { AbstractValidControl } from '../abstract-valid-control';
-import { ControlValidatorModel } from '../models/validator.model';
+import { Auth } from '../auth';
+import { ControlValidator } from '../models/control-validator';
 
-export function notEmptyValidator(groups?: string[], severity?: string): ControlValidatorModel {
-    return {
-        fn: (validControl: AbstractValidControl) => {
-            const value = validControl.anyValue;
+export function notEmptyValidator(groups?: string[], severity?: string): ControlValidator {
+    const validator = new ControlValidator({
+        identifier: Auth.Ids.notEmpty,
+        groups: groups,
+        severity: severity,
+    });
 
-            // When the value is undefined or null, it should only be validated by the required validator.
-            if (value === undefined || value === null) {
-                return true;
-            }
+    validator.fn = () => {
+        const value = validator.control.anyValue;
 
-            if (typeof value === 'string' || Array.isArray(value)) {
-                if (value.length === 0) {
-                    return false;
-                }
-            }
-
+        // When the value is undefined or null, it should only be validated by the required validator.
+        if (value === undefined || value === null) {
             return true;
-        },
-        format: (error: string) => {
-            return error;
-        },
-        identifier: 'notEmpty',
-        groups: groups ?? [],
-        severity: severity ?? 'ERROR',
+        }
+
+        if (typeof value === 'string' || Array.isArray(value)) {
+            if (value.length === 0) {
+                return false;
+            }
+        }
+
+        return true;
     };
+
+    return validator;
 }

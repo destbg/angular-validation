@@ -40,7 +40,7 @@ export class ValidationSubClassComponent extends BaseComponent<TestModel> implem
         this.validGroup.checkGroups();
     }
 
-    public writeValue(value: TestModel | null | undefined): void {
+    public setValue(value: TestModel | undefined): void {
         this.loader.load(() => {
             if (value !== null && value !== undefined) {
                 this.textControl.setValue(value.text);
@@ -51,6 +51,14 @@ export class ValidationSubClassComponent extends BaseComponent<TestModel> implem
                 this.text2Control.setValue('undefined value provided 2');
                 this.text3Control.setValue('undefined value provided 3');
             }
+        });
+    }
+
+    public getValue(): TestModel | undefined {
+        return new TestModel({
+            text: this.textControl.value,
+            text2: this.text2Control.value,
+            text3: this.text3Control.value,
         });
     }
 
@@ -104,14 +112,6 @@ export class ValidationSubClassComponent extends BaseComponent<TestModel> implem
         });
 
         return group;
-    }
-
-    public getValue(): TestModel | null | undefined {
-        return new TestModel({
-            text: this.textControl.value,
-            text2: this.text2Control.value,
-            text3: this.text3Control.value,
-        });
     }
 
     private updateTimestamp(): void {

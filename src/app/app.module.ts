@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { ValidControlDirective } from 'src/validation/valid-control.directive';
+import { ValidationModule } from 'src/validation';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -9,9 +9,9 @@ import { ValidationPageComponent } from './validation-page/validation-page.compo
 import { ValidationSubClassComponent } from './validation-sub-class/validation-sub-class.component';
 
 @NgModule({
-  declarations: [AppComponent, ValidationPageComponent, ValidationSubClassComponent, ValidControlDirective, InputControlComponent],
-  imports: [BrowserModule, AppRoutingModule],
-  providers: [],
-  bootstrap: [AppComponent],
+    declarations: [AppComponent, ValidationPageComponent, ValidationSubClassComponent, InputControlComponent],
+    imports: [BrowserModule, AppRoutingModule, ValidationModule],
+    providers: [],
+    bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

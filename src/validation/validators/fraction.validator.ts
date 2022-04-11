@@ -1,42 +1,46 @@
-import { AbstractValidControl } from '../abstract-valid-control';
-import { ControlValidatorModel } from '../models/validator.model';
+import { Auth } from '../auth';
+import { ControlValidator } from '../models/control-validator';
 import { format } from '../utils/format.util';
 
-export function fractionValidator(digits: number, groups?: string[], severity?: string): ControlValidatorModel {
-    return {
-        fn: (validControl: AbstractValidControl) => {
-            const value = validControl.anyValue;
+export function fractionValidator(digits: number, groups?: string[], severity?: string): ControlValidator {
+    const validator = new ControlValidator({
+        identifier: Auth.Ids.fraction,
+        groups: groups,
+        severity: severity,
+    });
 
-            // When the value is undefined or null, it should only be validated by the required validator.
-            if (value === undefined || value === null) {
-                return true;
-            }
+    validator.fn = () => {
+        const value = validator.control.anyValue;
 
-            const str: string = typeof value !== 'string' ? value.toString() : value;
+        // When the value is undefined or null, it should only be validated by the required validator.
+        if (value === undefined || value === null) {
+            return true;
+        }
 
-            // trim, replace all commas with dot, remove all non-numeric symbols
-            const newStr: string = str
-                .trim()
-                .replace(',', '.')
-                .replace(/[^0-9.,-]/g, '');
+        const str: string = typeof value !== 'string' ? value.toString() : value;
 
-            const parts: string[] = newStr.split('.');
+        // trim, replace all commas with dot, remove all non-numeric symbols
+        const newStr: string = str
+            .trim()
+            .replace(',', '.')
+            .replace(/[^0-9.,-]/g, '');
 
-            if (parts.length === 2) {
-                if (parts[1].length !== digits) {
-                    return false;
-                }
-            } else if (digits > 0) {
+        const parts: string[] = newStr.split('.');
+
+        if (parts.length === 2) {
+            if (parts[1].length !== digits) {
                 return false;
             }
+        } else if (digits > 0) {
+            return false;
+        }
 
-            return true;
-        },
-        format: (error: string) => {
-            return format(error, [digits]);
-        },
-        identifier: 'fraction',
-        groups: groups ?? [],
-        severity: severity ?? 'ERROR',
+        return true;
     };
+
+    validator.format = (error: string) => {
+        return format(error, [digits]);
+    };
+
+    return validator;
 }

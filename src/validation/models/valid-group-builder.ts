@@ -1,5 +1,5 @@
-import { ValidState } from "../valid-state";
-import { GroupValidatorModel } from "./validator.model";
+import { ValidState } from "../valid-states/valid-state";
+import { GroupValidator } from "./group-validator";
 
 export class ValidGroupBuilder {
     public validStates?: { [key: string]: ValidState } | ValidState[];
@@ -7,5 +7,5 @@ export class ValidGroupBuilder {
     public disabled?: boolean;
     public groups?: string[];
     public required?: boolean;
-    public validators?: GroupValidatorModel[];
+    public validators?: GroupValidator[];
 }

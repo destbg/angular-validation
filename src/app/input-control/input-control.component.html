@@ -1,20 +1,18 @@
 <div style="padding: 1em; border: 2px solid green">
-  <div>
-    I am currently: <strong>{{ isDisabled ? "disabled" : "enabled" }}</strong>
-  </div>
-  <label for="input">{{ label }}</label>
-  <input #input
-         id="input"
-         [disabled]="isDisabled" />
-  <div *ngIf="validControl">
-    Control is: <strong>{{ validControl.status }}</strong>
     <div>
-      errors:
-      <span *ngFor="let error of validControl.errors">
-        <span>{{ error.identifier }}</span>
-        <span> - </span>
-        <span>{{ error.format("{0} and {1} and {2} at most.") }}</span>
-      </span>
+        I am currently: <strong>{{ isDisabled ? "disabled" : "enabled" }}</strong>
     </div>
-  </div>
+    <label for="input">{{ label }}</label>
+    <input #input id="input" [disabled]="isDisabled" />
+    <div *ngIf="validControl">
+        Control is: <strong>{{ validControl.status }}</strong>
+        <div>
+            errors:
+            <span *ngFor="let error of validControl.errors">
+                <span>{{ error.identifier }}</span>
+                <span> - </span>
+                <span>{{ formatError(error) }}</span>
+            </span>
+        </div>
+    </div>
 </div>

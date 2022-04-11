@@ -1,14 +1,13 @@
 import { AbstractControl, FormArray, FormControl, FormGroup } from "@angular/forms";
 import { Subject } from "rxjs";
+import { ValidStatus } from "../helpers/valid-status";
+import { ValidControl } from "../valid-states/valid-control";
 import { AbstractValidControl } from "./abstract-valid-control";
-import { ValidationStatus } from "./helpers/validation-status";
-import { IControlValueAccessor } from "./interfaces/control-value-accessor.interface";
 import { TLControl } from "./tl-control";
-import { ReactiveFormsUtil } from "./utils/reactive-forms.util";
-import { ValidControl } from "./valid-control";
+import { ValidControlValueAccessor } from "./valid-control-value-accessor";
 
-export abstract class BaseReactiveFormsComponent<T> implements IControlValueAccessor<T> {
-    private _validControl: ValidControl<T> | null | undefined;
+export abstract class BaseReactiveFormsComponent<T> implements ValidControlValueAccessor<T> {
+    private _validControl: ValidControl<T> | undefined;
     private _abstractControl!: AbstractControl;
 
     public get control(): FormControl {
@@ -25,13 +24,13 @@ export abstract class BaseReactiveFormsComponent<T> implements IControlValueAcce
 
     public isDisabled: boolean = false;
 
-    public readonly changed: Subject<T | null | undefined>;
-    public readonly statusChanged: Subject<ValidationStatus>;
+    public readonly valueChanged: Subject<T | undefined>;
+    public readonly statusChanged: Subject<ValidStatus>;
     public readonly touched: Subject<void>;
 
-    constructor(control: TLControl | null | undefined) {
-        this.changed = new Subject<T | null | undefined>();
-        this.statusChanged = new Subject<ValidationStatus>();
+    constructor(control: TLControl | undefined) {
+        this.valueChanged = new Subject<T | undefined>();
+        this.statusChanged = new Subject<ValidStatus>();
         this.touched = new Subject<void>();
 
         if (control === null || control === undefined) {
@@ -53,14 +52,28 @@ export abstract class BaseReactiveFormsComponent<T> implements IControlValueAcce
         });
     }
 
-    public abstract writeValue(value: T | null | undefined): void;
-
-    public abstract getValue(): T | null | undefined;
-
-    public validate(): ValidationStatus {
-        this._abstractControl.markAsPending();
-        return ReactiveFormsUtil.mapStatus(this._abstractControl.status);
+    public getStatus(): ValidStatus {
+        return this._abstractControl.status;
     }
+
+    public setStatus(status: ValidStatus): void {
+        switch (status) {
+            case 'DISABLED':
+                this._abstractControl.disable();
+                break;
+            case 'PENDING':
+                this._abstractControl.markAsPending();
+                break;
+            case 'INVALID':
+            case 'VALID':
+                this._abstractControl.enable();
+                break;
+        }
+    }
+
+    public abstract setValue(value: T | undefined): void;
+
+    public abstract getValue(): T | undefined;
 
     public markAsTouched(): void {
         this._abstractControl.markAsTouched();
@@ -69,14 +82,14 @@ export abstract class BaseReactiveFormsComponent<T> implements IControlValueAcce
     protected abstract buildValidation(): AbstractControl;
 
     protected onChanged(): void {
-        this.changed.next(this.getValue());
+        this.valueChanged.next(this.getValue());
     }
 
     protected onStatusChanged(): void {
-        this.statusChanged.next(ReactiveFormsUtil.mapStatus(this._abstractControl.status));
+        this.statusChanged.next(this._abstractControl.status);
     }
 
-    private controlChanged(validControl: AbstractValidControl | null | undefined): void {
+    private controlChanged(validControl: AbstractValidControl | undefined): void {
         if (this._validControl !== null && this._validControl !== undefined) {
             this._validControl.setValueAccessor(undefined);
         }
@@ -92,7 +105,7 @@ export abstract class BaseReactiveFormsComponent<T> implements IControlValueAcce
         }
     }
 
-    private onValidControlStatusChanged(status: ValidationStatus): void {
+    private onValidControlStatusChanged(status: ValidStatus): void {
         if (status === 'DISABLED') {
             this.isDisabled = true;
             this._abstractControl.disable();

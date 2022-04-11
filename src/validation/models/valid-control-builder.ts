@@ -1,9 +1,9 @@
-import { ControlValidatorModel } from './validator.model';
+import { ControlValidator } from "./control-validator";
 
 export class ValidControlBuilder<T> {
     public value?: T;
     public disabled?: boolean;
     public groups?: string[];
     public required?: boolean;
-    public validators?: ControlValidatorModel[];
+    public validators?: ControlValidator[];
 }

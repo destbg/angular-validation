@@ -1,54 +1,58 @@
-import { AbstractValidControl } from '../abstract-valid-control';
-import { ControlValidatorModel } from '../models/validator.model';
+import { Auth } from '../auth';
+import { ControlValidator } from '../models/control-validator';
 import { format } from '../utils/format.util';
 
-export function notEqualValidator(expectedValues: any[], groups?: string[], severity?: string): ControlValidatorModel {
-    return {
-        fn: (validControl: AbstractValidControl) => {
-            const value = validControl.anyValue;
+export function notEqualValidator(expectedValues: any[], groups?: string[], severity?: string): ControlValidator {
+    const validator = new ControlValidator({
+        identifier: Auth.Ids.notEqual,
+        groups: groups,
+        severity: severity,
+    });
 
-            // When the value is undefined or null, it should only be validated by the required validator.
-            if (value === undefined || value === null) {
-                return true;
-            }
+    validator.fn = () => {
+        const value = validator.control.anyValue;
 
-            for (const expectedValue of expectedValues) {
-                if (expectedValue instanceof Date && value instanceof Date) {
-                    if (value.getTime() === expectedValue.getTime()) {
-                        return false;
-                    }
-                } else {
-                    switch (typeof expectedValue) {
-                        case 'number':
-                            if (Number(value) === expectedValue) {
-                                return false;
-                            }
-                            break;
-                        case 'string':
-                            if (String(value) === expectedValue) {
-                                return false;
-                            }
-                            break;
-                        case 'boolean':
-                            if (Boolean(value) === expectedValue) {
-                                return false;
-                            }
-                            break;
-                    }
-                }
+        // When the value is undefined or null, it should only be validated by the required validator.
+        if (value === undefined || value === null) {
+            return true;
+        }
 
-                if (value === expectedValue) {
+        for (const expectedValue of expectedValues) {
+            if (expectedValue instanceof Date && value instanceof Date) {
+                if (value.getTime() === expectedValue.getTime()) {
                     return false;
                 }
+            } else {
+                switch (typeof expectedValue) {
+                    case 'number':
+                        if (Number(value) === expectedValue) {
+                            return false;
+                        }
+                        break;
+                    case 'string':
+                        if (String(value) === expectedValue) {
+                            return false;
+                        }
+                        break;
+                    case 'boolean':
+                        if (Boolean(value) === expectedValue) {
+                            return false;
+                        }
+                        break;
+                }
             }
 
-            return true;
-        },
-        format: (error: string) => {
-            return format(error, [expectedValues]);
-        },
-        identifier: 'notEqual',
-        groups: groups ?? [],
-        severity: severity ?? 'ERROR',
+            if (value === expectedValue) {
+                return false;
+            }
+        }
+
+        return true;
     };
+
+    validator.format = (error: string) => {
+        return format(error, [expectedValues]);
+    };
+
+    return validator;
 }

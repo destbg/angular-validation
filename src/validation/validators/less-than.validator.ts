@@ -1,46 +1,47 @@
-import { AbstractValidControl } from '../abstract-valid-control';
-import { ControlValidatorModel } from '../models/validator.model';
-import { ValidGroup } from '../valid-group';
+import { AbstractValidControl } from '../abstractions/abstract-valid-control';
+import { Auth } from '../auth';
+import { ControlValidator } from '../models/control-validator';
+import { format } from '../utils/format.util';
 
-export function lessThanValidator(
-    otherValidControlName: string,
-    groups?: string[],
-    severity?: string
-): ControlValidatorModel {
-    return {
-        fn: (validControl: AbstractValidControl) => {
-            const value = validControl.anyValue;
+export function lessThanValidator(otherValidControlName: string, groups?: string[], severity?: string): ControlValidator {
+    const validator = new ControlValidator({
+        identifier: Auth.Ids.lessThan,
+        groups: groups,
+        severity: severity,
+    });
 
-            // When the value is undefined or null, it should only be validated by the required validator.
-            if (value === undefined || value === null) {
-                return true;
-            }
+    validator.fn = () => {
+        const value = validator.control.anyValue;
 
-            if (validControl.parent === null || validControl.parent === undefined) {
-                return true;
-            }
-
-            let otherValue: any;
-
-            if (validControl.parent instanceof ValidGroup) {
-                otherValue = (validControl.parent.validStates[otherValidControlName] as AbstractValidControl)?.anyValue;
-            }
-
-            if (otherValue === undefined || otherValue === null) {
-                return true;
-            }
-
-            if (typeof value === 'number' && typeof otherValue === 'number') {
-                return value < otherValue;
-            }
-
+        // When the value is undefined or null, it should only be validated by the required validator.
+        if (value === undefined || value === null) {
             return true;
-        },
-        format: (error: string) => {
-            return error;
-        },
-        identifier: 'lessThan',
-        groups: groups ?? [],
-        severity: severity ?? 'ERROR',
+        }
+
+        if (validator.control.parent === null || validator.control.parent === undefined) {
+            return true;
+        }
+
+        let otherValue: any;
+
+        if (validator.control.parent !== null && validator.control.parent !== undefined) {
+            otherValue = (validator.control.parent.validStates[otherValidControlName] as AbstractValidControl)?.anyValue;
+        }
+
+        if (otherValue === undefined || otherValue === null) {
+            return true;
+        }
+
+        if (typeof value === 'number' && typeof otherValue === 'number') {
+            return value < otherValue;
+        }
+
+        return true;
     };
+
+    validator.format = (error: string) => {
+        return format(error, [(validator.control.parent?.validStates[otherValidControlName] as AbstractValidControl)?.label]);
+    };
+
+    return validator;
 }

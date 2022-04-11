@@ -1,40 +1,44 @@
-import { AbstractValidControl } from '../abstract-valid-control';
-import { ControlValidatorModel } from '../models/validator.model';
+import { Auth } from '../auth';
+import { ControlValidator } from '../models/control-validator';
 import { format } from '../utils/format.util';
 
-export function maxFractionValidator(maxDigits: number, groups?: string[], severity?: string): ControlValidatorModel {
-    return {
-        fn: (validControl: AbstractValidControl) => {
-            const value = validControl.anyValue;
+export function maxFractionValidator(maxDigits: number, groups?: string[], severity?: string): ControlValidator {
+    const validator = new ControlValidator({
+        identifier: Auth.Ids.maxFraction,
+        groups: groups,
+        severity: severity,
+    });
 
-            // When the value is undefined or null, it should only be validated by the required validator.
-            if (value === undefined || value === null) {
-                return true;
-            }
+    validator.fn = () => {
+        const value = validator.control.anyValue;
 
-            const str: string = typeof value !== 'string' ? value.toString() : value;
-
-            // trim, replace all commas with dot, remove all non-numeric symbols
-            const newStr: string = str
-                .trim()
-                .replace(',', '.')
-                .replace(/[^0-9.,-]/g, '');
-
-            const parts: string[] = newStr.split('.');
-
-            if (parts.length === 2) {
-                if (parts[1].length > maxDigits) {
-                    return false;
-                }
-            }
-
+        // When the value is undefined or null, it should only be validated by the required validator.
+        if (value === undefined || value === null) {
             return true;
-        },
-        format: (error: string) => {
-            return format(error, [maxDigits]);
-        },
-        identifier: 'maxFraction',
-        groups: groups ?? [],
-        severity: severity ?? 'ERROR',
+        }
+
+        const str: string = typeof value !== 'string' ? value.toString() : value;
+
+        // trim, replace all commas with dot, remove all non-numeric symbols
+        const newStr: string = str
+            .trim()
+            .replace(',', '.')
+            .replace(/[^0-9.,-]/g, '');
+
+        const parts: string[] = newStr.split('.');
+
+        if (parts.length === 2) {
+            if (parts[1].length > maxDigits) {
+                return false;
+            }
+        }
+
+        return true;
     };
+
+    validator.format = (error: string) => {
+        return format(error, [maxDigits]);
+    };
+
+    return validator;
 }

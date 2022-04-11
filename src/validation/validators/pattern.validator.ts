@@ -1,12 +1,8 @@
-import { AbstractValidControl } from '../abstract-valid-control';
-import { ControlValidatorModel } from '../models/validator.model';
+import { Auth } from '../auth';
+import { ControlValidator } from '../models/control-validator';
 import { format } from '../utils/format.util';
 
-export function patternValidator(
-    pattern: string | RegExp,
-    groups?: string[],
-    severity?: string
-): ControlValidatorModel {
+export function patternValidator(pattern: string | RegExp, groups?: string[], severity?: string): ControlValidator {
     let regex: RegExp;
     let regexStr: string;
 
@@ -29,26 +25,30 @@ export function patternValidator(
         regex = pattern;
     }
 
-    return {
-        fn: (validControl: AbstractValidControl) => {
-            const value = validControl.anyValue;
+    const validator = new ControlValidator({
+        identifier: Auth.Ids.pattern,
+        groups: groups,
+        severity: severity,
+    });
 
-            // When the value is undefined or null, it should only be validated by the required validator.
-            if (value === undefined || value === null) {
-                return true;
-            }
+    validator.fn = () => {
+        const value = validator.control.anyValue;
 
-            if (typeof value === 'string') {
-                return regex.test(value);
-            }
-
+        // When the value is undefined or null, it should only be validated by the required validator.
+        if (value === undefined || value === null) {
             return true;
-        },
-        format: (error: string) => {
-            return format(error, [regexStr]);
-        },
-        identifier: 'pattern',
-        groups: groups ?? [],
-        severity: severity ?? 'ERROR',
+        }
+
+        if (typeof value === 'string') {
+            return regex.test(value);
+        }
+
+        return true;
     };
+
+    validator.format = (error: string) => {
+        return format(error, [regexStr]);
+    };
+
+    return validator;
 }
