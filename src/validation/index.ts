@@ -6,16 +6,18 @@ import { TLControl } from './tl-control';
 import { BaseControlComponent, BasePageComponent, BaseComponent } from './component';
 import { SetValueModel } from './set-value.model';
 import { BaseReactiveFormsComponent } from './reactive-forms-component';
+import { AbstractValidControl } from './abstract-valid-control';
 
 export {
-  ValidGroup,
-  ValidControl,
-  ValidState,
-  Guard,
-  TLControl,
-  BasePageComponent,
-  BaseControlComponent,
-  BaseComponent,
-  BaseReactiveFormsComponent,
-  SetValueModel
+    ValidGroup,
+    ValidControl,
+    ValidState,
+    AbstractValidControl,
+    Guard,
+    TLControl,
+    BasePageComponent,
+    BaseControlComponent,
+    BaseComponent,
+    BaseReactiveFormsComponent,
+    SetValueModel
 };

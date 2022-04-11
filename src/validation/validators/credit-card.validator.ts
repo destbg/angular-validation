@@ -1,9 +1,9 @@
-import { IValidControl } from '../interfaces/valid-control.interface';
+import { AbstractValidControl } from '../abstract-valid-control';
 import { ControlValidatorModel } from '../models/validator.model';
 
 export function creditCardValidator(groups?: string[], severity?: string): ControlValidatorModel {
   return {
-    fn: (validControl: IValidControl) => {
+    fn: (validControl: AbstractValidControl) => {
       const value = validControl.anyValue;
 
       // When the value is undefined or null, it should only be validated by the required validator.

@@ -1,4 +1,4 @@
-import { IValidControl } from '../interfaces/valid-control.interface';
+import { AbstractValidControl } from '../abstract-valid-control';
 import { ControlValidatorModel } from '../models/validator.model';
 import { format } from '../utils/format.util';
 
@@ -8,7 +8,7 @@ export function containValidator(
   severity?: string
 ): ControlValidatorModel {
   return {
-    fn: (validControl: IValidControl) => {
+    fn: (validControl: AbstractValidControl) => {
       const value = validControl.anyValue;
 
       // When the value is undefined or null, it should only be validated by the required validator.

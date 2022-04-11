@@ -1,10 +1,10 @@
 import { Observable } from 'rxjs';
-import { IValidControl } from './interfaces/valid-control.interface';
+import { AbstractValidControl } from './abstract-valid-control';
 
 export abstract class TLControl {
-  constructor(controlChanges: Observable<IValidControl | null | undefined>) {
-    this.controlChanges = controlChanges;
-  }
+    constructor(controlChanges: Observable<AbstractValidControl | null | undefined>) {
+        this.controlChanges = controlChanges;
+    }
 
-  public readonly controlChanges: Observable<IValidControl | null | undefined>;
+    public readonly controlChanges: Observable<AbstractValidControl | null | undefined>;
 }

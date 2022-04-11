@@ -1,4 +1,4 @@
-import { ControlValidatorModel, RequiredValidatorModel } from './models/validator.model';
+import { ControlValidatorModel } from './models/validator.model';
 import { containValidator } from './validators/contain.validator';
 import { creditCardValidator } from './validators/credit-card.validator';
 import { emailValidator } from './validators/email.validator';
@@ -19,115 +19,109 @@ import { notEmptyValidator } from './validators/not-empty.validator';
 import { notEqualValidator } from './validators/not-equal.validator';
 import { patternValidator } from './validators/pattern.validator';
 import { rangeValidator } from './validators/range.validator';
-import { requiredValidator } from './validators/required.validator';
 
 export class Guard {
-  /* In order to remove a validator you need to know it's ID, this class can help with that process. */
-  public static Ids = {
-    contain: 'contain',
-    creditCard: 'creditCard',
-    email: 'email',
-    isEnum: 'isEnum',
-    equal: 'equal',
-    exactLength: 'exactLength',
-    fraction: 'fraction',
-    greaterThanOrEqual: 'greaterThanOrEqual',
-    greaterThan: 'greaterThan',
-    lessThanOrEqual: 'lessThanOrEqual',
-    lessThan: 'lessThan',
-    maxFraction: 'maxFraction',
-    max: 'max',
-    minFraction: 'minFraction',
-    min: 'min',
-    notContain: 'notContain',
-    notEmpty: 'notEmpty',
-    notEqual: 'notEqual',
-    pattern: 'pattern',
-    range: 'range',
-    required: 'required',
-  };
+    /* In order to remove a validator you need to know it's ID, this class can help with that process. */
+    public static Ids = {
+        contain: 'contain',
+        creditCard: 'creditCard',
+        email: 'email',
+        isEnum: 'isEnum',
+        equal: 'equal',
+        exactLength: 'exactLength',
+        fraction: 'fraction',
+        greaterThanOrEqual: 'greaterThanOrEqual',
+        greaterThan: 'greaterThan',
+        lessThanOrEqual: 'lessThanOrEqual',
+        lessThan: 'lessThan',
+        maxFraction: 'maxFraction',
+        max: 'max',
+        minFraction: 'minFraction',
+        min: 'min',
+        notContain: 'notContain',
+        notEmpty: 'notEmpty',
+        notEqual: 'notEqual',
+        pattern: 'pattern',
+        range: 'range',
+    };
 
-  public static contain(containValue: string | any, groups?: string[], severity?: string): ControlValidatorModel {
-    return containValidator(containValue, groups, severity);
-  }
+    public static contain(containValue: string | any, groups?: string[], severity?: string): ControlValidatorModel {
+        return containValidator(containValue, groups, severity);
+    }
 
-  public static creditCard(groups?: string[], severity?: string): ControlValidatorModel {
-    return creditCardValidator(groups, severity);
-  }
+    public static creditCard(groups?: string[], severity?: string): ControlValidatorModel {
+        return creditCardValidator(groups, severity);
+    }
 
-  public static email(groups?: string[], severity?: string): ControlValidatorModel {
-    return emailValidator(groups, severity);
-  }
+    public static email(groups?: string[], severity?: string): ControlValidatorModel {
+        return emailValidator(groups, severity);
+    }
 
-  public static isEnum(enumValues: string[], groups?: string[], severity?: string): ControlValidatorModel {
-    return isEnumValidator(enumValues, groups, severity);
-  }
+    public static isEnum(enumValues: string[], groups?: string[], severity?: string): ControlValidatorModel {
+        return isEnumValidator(enumValues, groups, severity);
+    }
 
-  public static equal(expectedValues: any[], groups?: string[], severity?: string): ControlValidatorModel {
-    return equalValidator(expectedValues, groups, severity);
-  }
+    public static equal(expectedValues: any[], groups?: string[], severity?: string): ControlValidatorModel {
+        return equalValidator(expectedValues, groups, severity);
+    }
 
-  public static exactLength(length: number, groups?: string[], severity?: string): ControlValidatorModel {
-    return exactLengthValidator(length, groups, severity);
-  }
+    public static exactLength(length: number, groups?: string[], severity?: string): ControlValidatorModel {
+        return exactLengthValidator(length, groups, severity);
+    }
 
-  public static fraction(digits: number, groups?: string[], severity?: string): ControlValidatorModel {
-    return fractionValidator(digits, groups, severity);
-  }
+    public static fraction(digits: number, groups?: string[], severity?: string): ControlValidatorModel {
+        return fractionValidator(digits, groups, severity);
+    }
 
-  public static greaterThanOrEqual(otherValidControlName: string, groups?: string[], severity?: string): ControlValidatorModel {
-    return greaterThanOrEqualValidator(otherValidControlName, groups, severity);
-  }
+    public static greaterThanOrEqual(otherValidControlName: string, groups?: string[], severity?: string): ControlValidatorModel {
+        return greaterThanOrEqualValidator(otherValidControlName, groups, severity);
+    }
 
-  public static greaterThan(otherValidControlName: string, groups?: string[], severity?: string): ControlValidatorModel {
-    return greaterThanValidator(otherValidControlName, groups, severity);
-  }
+    public static greaterThan(otherValidControlName: string, groups?: string[], severity?: string): ControlValidatorModel {
+        return greaterThanValidator(otherValidControlName, groups, severity);
+    }
 
-  public static lessThanOrEqual(otherValidControlName: string, groups?: string[], severity?: string): ControlValidatorModel {
-    return lessThanOrEqualValidator(otherValidControlName, groups, severity);
-  }
+    public static lessThanOrEqual(otherValidControlName: string, groups?: string[], severity?: string): ControlValidatorModel {
+        return lessThanOrEqualValidator(otherValidControlName, groups, severity);
+    }
 
-  public static lessThan(otherValidControlName: string, groups?: string[], severity?: string): ControlValidatorModel {
-    return lessThanValidator(otherValidControlName, groups, severity);
-  }
+    public static lessThan(otherValidControlName: string, groups?: string[], severity?: string): ControlValidatorModel {
+        return lessThanValidator(otherValidControlName, groups, severity);
+    }
 
-  public static maxFraction(maxDigits: number, groups?: string[], severity?: string): ControlValidatorModel {
-    return maxFractionValidator(maxDigits, groups, severity);
-  }
+    public static maxFraction(maxDigits: number, groups?: string[], severity?: string): ControlValidatorModel {
+        return maxFractionValidator(maxDigits, groups, severity);
+    }
 
-  public static max(max: number, groups?: string[], severity?: string): ControlValidatorModel {
-    return maxValidator(max, groups, severity);
-  }
+    public static max(max: number, groups?: string[], severity?: string): ControlValidatorModel {
+        return maxValidator(max, groups, severity);
+    }
 
-  public static minFraction(minDigits: number, groups?: string[], severity?: string): ControlValidatorModel {
-    return minFractionValidator(minDigits, groups, severity);
-  }
+    public static minFraction(minDigits: number, groups?: string[], severity?: string): ControlValidatorModel {
+        return minFractionValidator(minDigits, groups, severity);
+    }
 
-  public static min(min: number, groups?: string[], severity?: string): ControlValidatorModel {
-    return minValidator(min, groups, severity);
-  }
+    public static min(min: number, groups?: string[], severity?: string): ControlValidatorModel {
+        return minValidator(min, groups, severity);
+    }
 
-  public static notContain(containValue: string, groups?: string[], severity?: string): ControlValidatorModel {
-    return notContainValidator(containValue, groups, severity);
-  }
+    public static notContain(containValue: string, groups?: string[], severity?: string): ControlValidatorModel {
+        return notContainValidator(containValue, groups, severity);
+    }
 
-  public static notEmpty(groups?: string[], severity?: string): ControlValidatorModel {
-    return notEmptyValidator(groups, severity);
-  }
+    public static notEmpty(groups?: string[], severity?: string): ControlValidatorModel {
+        return notEmptyValidator(groups, severity);
+    }
 
-  public static notEqual(expectedValues: any[], groups?: string[], severity?: string): ControlValidatorModel {
-    return notEqualValidator(expectedValues, groups, severity);
-  }
+    public static notEqual(expectedValues: any[], groups?: string[], severity?: string): ControlValidatorModel {
+        return notEqualValidator(expectedValues, groups, severity);
+    }
 
-  public static pattern(pattern: string | RegExp, groups?: string[], severity?: string): ControlValidatorModel {
-    return patternValidator(pattern, groups, severity);
-  }
+    public static pattern(pattern: string | RegExp, groups?: string[], severity?: string): ControlValidatorModel {
+        return patternValidator(pattern, groups, severity);
+    }
 
-  public static range(min: number, max: number, groups?: string[], severity?: string): ControlValidatorModel {
-    return rangeValidator(min, max, groups, severity);
-  }
-
-  public static required(groups?: string[]): RequiredValidatorModel {
-    return requiredValidator(groups);
-  }
+    public static range(min: number, max: number, groups?: string[], severity?: string): ControlValidatorModel {
+        return rangeValidator(min, max, groups, severity);
+    }
 }

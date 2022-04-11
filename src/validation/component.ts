@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
+import { AbstractValidControl } from './abstract-valid-control';
 import { ValidationStatus } from './helpers/validation-status';
 import { IControlValueAccessor } from './interfaces/control-value-accessor.interface';
-import { IValidControl } from './interfaces/valid-control.interface';
 import { TLControl } from './tl-control';
 import { ValidControl } from './valid-control';
 import { ValidGroup } from './valid-group';
@@ -62,7 +62,7 @@ export abstract class BaseControlComponent<T> implements IControlValueAccessor<T
 
   public abstract markAsTouched(): void;
 
-  private controlChanged(validControl: IValidControl | null | undefined): void {
+  private controlChanged(validControl: AbstractValidControl | null | undefined): void {
     if (this.validControl !== null && this.validControl !== undefined) {
       this.validControl.setValueAccessor(undefined);
     }
@@ -146,7 +146,7 @@ export abstract class BaseComponent<T> implements IControlValueAccessor<T> {
     this.statusChanged.next(this.validGroup.status);
   }
 
-  private controlChanged(validControl: IValidControl | null | undefined): void {
+  private controlChanged(validControl: AbstractValidControl | null | undefined): void {
     if (this._validControl !== null && this._validControl !== undefined) {
       this._validControl.setValueAccessor(undefined);
     }
