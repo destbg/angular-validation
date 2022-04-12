@@ -20,7 +20,8 @@ export class Validator {
         this.identifier = builder.identifier;
         this.groups = builder.groups ?? [];
         this.severity = builder.severity ?? 'ERROR';
+        this.fn = builder.fn!;
 
-        this.format = (error: string) => error;
+        this.format = builder.format ?? ((error: string) => error);
     }
 }

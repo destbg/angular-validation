@@ -1,5 +1,5 @@
 import { Component, OnInit, Self } from '@angular/core';
-import { BaseComponent, Auth, TLControl, ValidControl, ValidGroup } from 'src/validation';
+import { BaseComponent, Auth, TLControl, ValidControl, ValidGroup, GroupValidator } from 'src/validation';
 import { Loader } from '../loader';
 import { TestModel } from '../test.model';
 
@@ -102,7 +102,8 @@ export class ValidationSubClassComponent extends BaseComponent<TestModel> implem
             groupFns: {
                 DisableText: () => this.disableText,
                 DisableHiddenText: () => this.hideInputControl,
-            }
+            },
+            validators: [this.validateGroup()],
         });
 
         group.childValueChanges.subscribe({
@@ -122,5 +123,17 @@ export class ValidationSubClassComponent extends BaseComponent<TestModel> implem
         setTimeout(() => {
             this.loader.complete();
         }, 1000);
+    }
+
+    private validateGroup(): GroupValidator {
+        const validator = new GroupValidator({
+            identifier: 'validateGroup',
+            fn: () => {
+                return this.textControl.value !== 'ggg';
+            },
+            format: (_) => 'Invalid value',
+        });
+
+        return validator;
     }
 }
