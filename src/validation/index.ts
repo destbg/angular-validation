@@ -7,6 +7,8 @@ import { BaseControlComponent } from "./abstractions/base-control-component";
 import { BasePageComponent } from "./abstractions/base-page-component";
 
 import { ValidControlDirective } from "./directives/valid-control.directive";
+import { ValidGroupDirective } from "./directives/valid-group.directive";
+import { ValidControlNameDirective } from "./directives/valid-control-name.directive";
 
 import { ValidStatus } from "./helpers/valid-status";
 import { ValidType } from "./helpers/valid-type";
@@ -35,6 +37,8 @@ export {
     BaseControlComponent,
     BasePageComponent,
     ValidControlDirective,
+    ValidGroupDirective,
+    ValidControlNameDirective,
     ValidStatus,
     ValidType,
     ControlValidator,

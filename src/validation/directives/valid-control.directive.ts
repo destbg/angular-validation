@@ -2,6 +2,7 @@ import { Directive, forwardRef, Input, OnChanges, OnDestroy, SimpleChanges } fro
 import { Subject } from "rxjs";
 import { AbstractValidControl } from "../abstractions/abstract-valid-control";
 import { TLControl } from "../abstractions/tl-control";
+import { ValidState } from "../valid-states/valid-state";
 
 export const validControlBinding: any = {
     provide: TLControl,
@@ -14,13 +15,13 @@ export const validControlBinding: any = {
     exportAs: 'tlForm',
 })
 export class ValidControlDirective extends TLControl implements OnChanges, OnDestroy {
-    private readonly _validControlChanges: Subject<AbstractValidControl | undefined>;
+    private readonly _validControlChanges: Subject<ValidState | undefined>;
 
     @Input()
     public validControl: AbstractValidControl | undefined;
 
     constructor() {
-        const validControlChanges = new Subject<AbstractValidControl | undefined>();
+        const validControlChanges = new Subject<ValidState | undefined>();
         super(validControlChanges.asObservable());
 
         this._validControlChanges = validControlChanges;

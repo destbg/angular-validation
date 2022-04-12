@@ -1,7 +1,7 @@
 import { Subject } from "rxjs";
 import { ValidStatus } from "../helpers/valid-status";
 import { ValidControl } from "../valid-states/valid-control";
-import { AbstractValidControl } from "./abstract-valid-control";
+import { ValidState } from "../valid-states/valid-state";
 import { TLControl } from "./tl-control";
 import { ValidControlValueAccessor } from "./valid-control-value-accessor";
 
@@ -40,7 +40,7 @@ export abstract class BaseControlComponent<T> implements ValidControlValueAccess
 
     protected abstract validControlChanged(): void;
 
-    private controlChanged(validControl: AbstractValidControl | undefined): void {
+    private controlChanged(validControl: ValidState | undefined): void {
         if (this.validControl !== null && this.validControl !== undefined) {
             this.validControl.setValueAccessor(undefined);
         }

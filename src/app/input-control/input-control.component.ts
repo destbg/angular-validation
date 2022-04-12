@@ -17,21 +17,25 @@ export class InputControlComponent extends BaseControlComponent<string> implemen
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
-        if ('label' in changes) {
+        if ('label' in changes && this.validControl !== undefined) {
             this.validControl.label = this.label;
         }
     }
 
     public ngAfterViewInit(): void {
-        this.input!.nativeElement.addEventListener('input', () => {
+        if (this.input === undefined) {
+            return;
+        }
+
+        this.input.nativeElement.addEventListener('input', () => {
             this.valueChanged.next(this.getValue());
         });
 
-        this.input!.nativeElement.addEventListener('focusout', () => {
+        this.input.nativeElement.addEventListener('focusout', () => {
             this.touched.next();
         });
 
-        if (this.validControl !== null && this.validControl !== undefined) {
+        if (this.validControl !== undefined) {
             this.setValue(this.validControl.value);
         }
     }

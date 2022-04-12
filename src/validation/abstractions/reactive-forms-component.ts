@@ -2,7 +2,7 @@ import { AbstractControl, FormArray, FormControl, FormGroup } from "@angular/for
 import { Subject } from "rxjs";
 import { ValidStatus } from "../helpers/valid-status";
 import { ValidControl } from "../valid-states/valid-control";
-import { AbstractValidControl } from "./abstract-valid-control";
+import { ValidState } from "../valid-states/valid-state";
 import { TLControl } from "./tl-control";
 import { ValidControlValueAccessor } from "./valid-control-value-accessor";
 
@@ -89,7 +89,7 @@ export abstract class BaseReactiveFormsComponent<T> implements ValidControlValue
         this.statusChanged.next(this._abstractControl.status);
     }
 
-    private controlChanged(validControl: AbstractValidControl | undefined): void {
+    private controlChanged(validControl: ValidState | undefined): void {
         if (this._validControl !== null && this._validControl !== undefined) {
             this._validControl.setValueAccessor(undefined);
         }
